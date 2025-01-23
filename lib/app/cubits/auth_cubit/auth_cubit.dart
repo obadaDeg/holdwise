@@ -1,20 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+part 'auth_state.dart';
 // Authentication States
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-class AuthLoading extends AuthState {}
-class AuthAuthenticated extends AuthState {
-  final User user;
-  AuthAuthenticated(this.user);
-}
-class AuthError extends AuthState {
-  final String message;
-  AuthError(this.message);
-}
-class AuthLoggedOut extends AuthState {}
 
 class AuthCubit extends Cubit<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -83,10 +70,30 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> updatePhoneNumber(String phoneNumber) async {
+  Future<void> updatePhoneNumber(PhoneAuthCredential phoneNumber) async {
     try {
       await _auth.currentUser!.updatePhoneNumber(phoneNumber);
       emit(AuthAuthenticated(_auth.currentUser!));
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
+  }
+
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          emit(AuthError(e.message!));
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          emit(AuthError('Code sent!'));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
     } catch (e) {
       emit(AuthError(e.toString()));
     }
