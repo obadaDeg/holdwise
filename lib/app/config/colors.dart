@@ -11,6 +11,7 @@ class AppColors {
   static const Color primary700 = Color(0xFF4F31D0);
   static const Color primary800 = Color(0xFF3517B4);
   static const Color primary900 = Color(0xFF250C92);
+  
 
   // Secondary Colors
   static const Color secondary100 = Color(0xFFE1F1BC);
@@ -35,18 +36,28 @@ class AppColors {
   static const Color tertiary900 = Color(0xFF6C0772);
 
   // Neutral Colors
+  static const Color gray100 = Color(0xFFF5F5F5);
+  static const Color gray200 = Color(0xFFE0E0E0);
+  static const Color gray300 = Color(0xFFBDBDBD);
+  static const Color gray400 = Color(0xFF9E9E9E);
   static const Color gray500 = Color(0xFFA2A1A8);
+  static const Color gray600 = Color(0xFF7E7D8A);
+  static const Color gray700 = Color(0xFF6E6D7A);
+  static const Color gray800 = Color(0xFF4F4E5B);
+  static const Color gray900 = Color(0xFF2A2A2A);
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const Color transparent = Colors.transparent;
   static const Color dark = Color(0xFF16151C);
   static const Color light = Color(0xFFD9E1E1);
 
+
   // Feedback Colors
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFFC107);
   static const Color error = Color(0xFFF44336);
   static const Color info = Color(0xFFD9E1E1);
+
 
   // Opacity Utility (Dynamically)
   static Color withOpacity(Color color, double opacity) {

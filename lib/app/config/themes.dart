@@ -12,18 +12,57 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: _colorSchemeLight(),
       scaffoldBackgroundColor: AppColors.white,
-      appBarTheme: _appBarTheme(context, AppColors.primary500, AppColors.white),
+      appBarTheme: _appBarTheme(
+        context,
+        backgroundColor: AppColors.primary500,
+        foregroundColor: AppColors.white,
+      ),
       textTheme: _textTheme(context),
-      elevatedButtonTheme: _elevatedButtonTheme(context, AppColors.primary500),
-      textButtonTheme: _textButtonTheme(context, AppColors.primary500),
-      outlinedButtonTheme: _outlinedButtonTheme(context, AppColors.primary500),
-      inputDecorationTheme: _inputDecorationTheme(context, AppColors.primary500, AppColors.light, AppColors.gray500),
-      floatingActionButtonTheme: _floatingActionButtonTheme(AppColors.primary500),
-      snackBarTheme: _snackBarTheme(context, AppColors.primary500, AppColors.secondary500),
-      cardTheme: _cardTheme(AppColors.light, AppColors.gray500),
-      dialogTheme: _dialogTheme(context, AppColors.white, AppColors.black),
-      tabBarTheme: _tabBarTheme(context, AppColors.primary500, AppColors.gray500),
-      progressIndicatorTheme: _progressIndicatorTheme(AppColors.primary500, AppColors.primary200),
+      elevatedButtonTheme: _elevatedButtonTheme(
+        context,
+        color: AppColors.primary500,
+      ),
+      textButtonTheme: _textButtonTheme(
+        context,
+        color: AppColors.primary500,
+      ),
+      outlinedButtonTheme: _outlinedButtonTheme(
+        context,
+        color: AppColors.primary500,
+        fillColor: AppColors.white,
+      ),
+      inputDecorationTheme: _inputDecorationTheme(
+        context,
+        primaryColor: AppColors.primary500,
+        fillColor: AppColors.light,
+        hintColor: AppColors.black,
+      ),
+      floatingActionButtonTheme: _floatingActionButtonTheme(
+        color: AppColors.primary500,
+      ),
+      snackBarTheme: _snackBarTheme(
+        context,
+        backgroundColor: AppColors.primary500,
+        actionColor: AppColors.secondary500,
+      ),
+      cardTheme: _cardTheme(
+        backgroundColor: AppColors.light,
+        shadowColor: AppColors.black,
+      ),
+      dialogTheme: _dialogTheme(
+        context,
+        backgroundColor: AppColors.white,
+        titleColor: AppColors.black,
+      ),
+      tabBarTheme: _tabBarTheme(
+        context,
+        selectedColor: AppColors.primary500,
+        unselectedColor: AppColors.gray800,
+      ),
+      progressIndicatorTheme: _progressIndicatorTheme(
+        color: AppColors.primary500,
+        trackColor: AppColors.primary200,
+      ),
       iconTheme: const IconThemeData(color: AppColors.gray500),
     );
   }
@@ -35,73 +74,124 @@ class AppTheme {
       brightness: Brightness.dark,
       colorScheme: _colorSchemeDark(),
       scaffoldBackgroundColor: AppColors.dark,
-      appBarTheme: _appBarTheme(context, AppColors.primary700, AppColors.white),
-      textTheme: _textTheme(context).apply(bodyColor: AppColors.white, displayColor: AppColors.white),
-      elevatedButtonTheme: _elevatedButtonTheme(context, AppColors.primary700),
-      textButtonTheme: _textButtonTheme(context, AppColors.primary700),
-      outlinedButtonTheme: _outlinedButtonTheme(context, AppColors.primary700),
-      inputDecorationTheme: _inputDecorationTheme(context, AppColors.primary700, AppColors.dark, AppColors.gray500),
-      floatingActionButtonTheme: _floatingActionButtonTheme(AppColors.primary700),
-      snackBarTheme: _snackBarTheme(context, AppColors.primary700, AppColors.secondary700),
-      cardTheme: _cardTheme(AppColors.dark, AppColors.gray500),
-      dialogTheme: _dialogTheme(context, AppColors.dark, AppColors.white),
+      appBarTheme: _appBarTheme(
+        context,
+        backgroundColor: AppColors.primary700,
+        foregroundColor: AppColors.white,
+      ),
+      textTheme: _textTheme(context)
+          .apply(bodyColor: AppColors.white, displayColor: AppColors.white),
+      elevatedButtonTheme: _elevatedButtonTheme(
+        context,
+        color: AppColors.primary700,
+      ),
+      textButtonTheme: _textButtonTheme(
+        context,
+        color: AppColors.white,
+      ),
+      outlinedButtonTheme: _outlinedButtonTheme(
+        context,
+        color: AppColors.primary500,
+        fillColor: AppColors.gray200,
+      ),
+      inputDecorationTheme: _inputDecorationTheme(
+        context,
+        primaryColor: AppColors.primary500,
+        fillColor: AppColors.gray200,
+        hintColor: AppColors.gray500,
+      ),
+      floatingActionButtonTheme: _floatingActionButtonTheme(
+        color: AppColors.primary700,
+      ),
+      snackBarTheme: _snackBarTheme(
+        context,
+        backgroundColor: AppColors.primary700,
+        actionColor: AppColors.secondary700,
+      ),
+      cardTheme: _cardTheme(
+        backgroundColor: AppColors.gray800,
+        shadowColor: AppColors.gray500,
+      ),
+      dialogTheme: _dialogTheme(
+        context,
+        backgroundColor: AppColors.dark,
+        titleColor: AppColors.white,
+      ),
+      tabBarTheme: _tabBarTheme(
+        context,
+        selectedColor: AppColors.primary700,
+        unselectedColor: AppColors.gray400,
+      ),
+      progressIndicatorTheme: _progressIndicatorTheme(
+        color: AppColors.primary700,
+        trackColor: AppColors.primary300,
+      ),
+      iconTheme: const IconThemeData(color: AppColors.gray300),
     );
   }
 
   /// Common Color Schemes
-  static ColorScheme _colorSchemeLight() => ColorScheme.fromSeed(
-        seedColor: AppColors.primary500,
+  static ColorScheme _colorSchemeLight() => ColorScheme(
+        brightness: Brightness.light,
         primary: AppColors.primary500,
-        secondary: AppColors.secondary500,
-        surface: AppColors.light,
-        error: AppColors.error,
         onPrimary: AppColors.white,
+        secondary: AppColors.secondary500,
         onSecondary: AppColors.white,
-        onSurface: AppColors.black,
+        surface: AppColors.gray100,
+        onSurface: AppColors.gray900,
+        error: AppColors.error,
         onError: AppColors.white,
       );
 
-  static ColorScheme _colorSchemeDark() => ColorScheme.fromSeed(
-        seedColor: AppColors.primary700,
+  static ColorScheme _colorSchemeDark() => ColorScheme(
+        brightness: Brightness.dark,
         primary: AppColors.primary700,
+        onPrimary: AppColors.gray100,
         secondary: AppColors.secondary700,
-        surface: AppColors.dark,
+        onSecondary: AppColors.gray200,
+        surface: AppColors.gray800,
+        onSurface: AppColors.gray100,
         error: AppColors.error,
-        onPrimary: AppColors.white,
-        onSecondary: AppColors.white,
-        onSurface: AppColors.white,
-        onError: AppColors.black,
+        onError: AppColors.gray100,
       );
 
   /// Shared Themes and Configurations
-  static AppBarTheme _appBarTheme(BuildContext context, Color backgroundColor, Color foregroundColor) {
+  static AppBarTheme _appBarTheme(
+    BuildContext context, {
+    required Color backgroundColor,
+    required Color foregroundColor,
+  }) {
     return AppBarTheme(
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
-      titleTextStyle: AppTypography.header6(context).copyWith(color: foregroundColor),
+      titleTextStyle:
+          AppTypography.header6(context).copyWith(color: foregroundColor),
       iconTheme: IconThemeData(color: foregroundColor),
     );
   }
 
   static TextTheme _textTheme(BuildContext context) {
     return TextTheme(
-      displayLarge: AppTypography.header1(context),
-      displayMedium: AppTypography.header2(context),
-      displaySmall: AppTypography.header3(context),
-      headlineLarge: AppTypography.header4(context),
-      headlineMedium: AppTypography.header5(context),
-      headlineSmall: AppTypography.header6(context),
-      titleLarge: AppTypography.subtitle1(context),
-      titleMedium: AppTypography.subtitle2(context),
-      bodyLarge: AppTypography.body1(context),
-      bodyMedium: AppTypography.body2(context),
-      labelLarge: AppTypography.label(context),
-      labelMedium: AppTypography.button(context),
-      bodySmall: AppTypography.caption(context),
+      displayLarge: AppTypography.header1(context).copyWith(color: AppColors.gray900),
+      displayMedium: AppTypography.header2(context).copyWith(color: AppColors.gray900),
+      displaySmall: AppTypography.header3(context).copyWith(color: AppColors.gray900),
+      headlineLarge: AppTypography.header4(context).copyWith(color: AppColors.gray900),
+      headlineMedium: AppTypography.header5(context).copyWith(color: AppColors.gray900),
+      headlineSmall: AppTypography.header6(context).copyWith(color: AppColors.gray900),
+      titleLarge: AppTypography.subtitle1(context).copyWith(color: AppColors.gray900),
+      titleMedium: AppTypography.subtitle2(context).copyWith(color: AppColors.gray900),
+      bodyLarge: AppTypography.body1(context).copyWith(color: AppColors.gray900),
+      bodyMedium: AppTypography.body2(context).copyWith(color: AppColors.gray900),
+      labelLarge: AppTypography.label(context).copyWith(color: AppColors.gray900),
+      labelMedium: AppTypography.button(context).copyWith(color: AppColors.gray900),
+      bodySmall: AppTypography.caption(context).copyWith(color: AppColors.gray900),
     );
   }
 
-  static ElevatedButtonThemeData _elevatedButtonTheme(BuildContext context, Color color) {
+  static ElevatedButtonThemeData _elevatedButtonTheme(
+    BuildContext context, {
+    required Color color,
+  }) {
     return ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -111,7 +201,10 @@ class AppTheme {
     );
   }
 
-  static TextButtonThemeData _textButtonTheme(BuildContext context, Color color) {
+  static TextButtonThemeData _textButtonTheme(
+    BuildContext context, {
+    required Color color,
+  }) {
     return TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: color,
@@ -120,26 +213,36 @@ class AppTheme {
     );
   }
 
-  static OutlinedButtonThemeData _outlinedButtonTheme(BuildContext context, Color color) {
+  static OutlinedButtonThemeData _outlinedButtonTheme(
+    BuildContext context, {
+    required Color color,
+    required Color fillColor,
+  }) {
     return OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: color,
+        backgroundColor: fillColor,
         side: BorderSide(color: color),
         textStyle: AppTypography.button(context),
       ),
     );
   }
 
-  static InputDecorationTheme _inputDecorationTheme(BuildContext context, Color primaryColor, Color fillColor, Color hintColor) {
+  static InputDecorationTheme _inputDecorationTheme(
+    BuildContext context, {
+    required Color primaryColor,
+    required Color fillColor,
+    required Color hintColor,
+  }) {
     return InputDecorationTheme(
       filled: true,
       fillColor: fillColor,
       border: OutlineInputBorder(
-        borderSide: BorderSide(color: primaryColor),
+        borderSide: BorderSide(color: AppColors.gray300),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: primaryColor.withOpacity(0.7)),
+        borderSide: BorderSide(color: primaryColor),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       focusedBorder: OutlineInputBorder(
@@ -151,43 +254,64 @@ class AppTheme {
     );
   }
 
-  static FloatingActionButtonThemeData _floatingActionButtonTheme(Color color) {
+  static FloatingActionButtonThemeData _floatingActionButtonTheme({
+    required Color color,
+  }) {
     return FloatingActionButtonThemeData(
       backgroundColor: color,
       foregroundColor: AppColors.white,
     );
   }
 
-  static SnackBarThemeData _snackBarTheme(BuildContext context, Color backgroundColor, Color actionColor) {
+  static SnackBarThemeData _snackBarTheme(
+    BuildContext context, {
+    required Color backgroundColor,
+    required Color actionColor,
+  }) {
     return SnackBarThemeData(
       backgroundColor: backgroundColor,
-      contentTextStyle: AppTypography.body1(context).copyWith(color: AppColors.white),
+      contentTextStyle:
+          AppTypography.body1(context).copyWith(color: AppColors.white),
       actionTextColor: actionColor,
     );
   }
 
-  static CardTheme _cardTheme(Color backgroundColor, Color shadowColor) {
+  static CardTheme _cardTheme({
+    required Color backgroundColor,
+    required Color shadowColor,
+  }) {
     return CardTheme(
       color: backgroundColor,
-      shadowColor: shadowColor,
+      shadowColor: AppColors.gray300,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
+      elevation: 2,
     );
   }
 
-  static DialogTheme _dialogTheme(BuildContext context, Color backgroundColor, Color titleColor) {
+  static DialogTheme _dialogTheme(
+    BuildContext context, {
+    required Color backgroundColor,
+    required Color titleColor,
+  }) {
     return DialogTheme(
       backgroundColor: backgroundColor,
-      titleTextStyle: AppTypography.header5(context).copyWith(color: titleColor),
-      contentTextStyle: AppTypography.body1(context).copyWith(color: titleColor),
+      titleTextStyle:
+          AppTypography.header5(context).copyWith(color: titleColor),
+      contentTextStyle:
+          AppTypography.body1(context).copyWith(color: AppColors.gray300),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
     );
   }
 
-  static TabBarTheme _tabBarTheme(BuildContext context, Color selectedColor, Color unselectedColor) {
+  static TabBarTheme _tabBarTheme(
+    BuildContext context, {
+    required Color selectedColor,
+    required Color unselectedColor,
+  }) {
     return TabBarTheme(
       labelColor: selectedColor,
       unselectedLabelColor: unselectedColor,
@@ -199,7 +323,10 @@ class AppTheme {
     );
   }
 
-  static ProgressIndicatorThemeData _progressIndicatorTheme(Color color, Color trackColor) {
+  static ProgressIndicatorThemeData _progressIndicatorTheme({
+    required Color color,
+    required Color trackColor,
+  }) {
     return ProgressIndicatorThemeData(
       color: color,
       linearTrackColor: trackColor,

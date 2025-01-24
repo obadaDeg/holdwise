@@ -49,6 +49,9 @@ class APIKeys {
 }
 
 class Constants {
+  static const double borderRadius = 8.0;
+  static const double backgroundWhiteAlpha = 0.95;
+  
   // Padding constants (general)
   static double getPadding(BuildContext context) {
     return MediaQuery.of(context).size.width * 0.05; // 5% of screen width
