@@ -65,6 +65,7 @@ class AppTheme {
       dialogTheme: _dialogTheme(
         context,
         backgroundColor: AppColors.white,
+        contentColor: AppColors.gray900,
         titleColor: AppColors.black,
       ),
       tabBarTheme: _tabBarTheme(
@@ -138,6 +139,7 @@ class AppTheme {
       dialogTheme: _dialogTheme(
         context,
         backgroundColor: AppColors.dark,
+        contentColor: AppColors.gray200,
         titleColor: AppColors.white,
       ),
       tabBarTheme: _tabBarTheme(
@@ -458,13 +460,14 @@ class AppTheme {
     BuildContext context, {
     required Color backgroundColor,
     required Color titleColor,
+    required Color contentColor,
   }) {
     return DialogTheme(
       backgroundColor: backgroundColor,
       titleTextStyle:
           AppTypography.header5(context).copyWith(color: titleColor),
       contentTextStyle:
-          AppTypography.body1(context).copyWith(color: AppColors.gray300),
+          AppTypography.body1(context).copyWith(color: contentColor),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),

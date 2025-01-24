@@ -80,16 +80,7 @@ class HomePage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Example of a SnackBar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('Floating Action Button Pressed!'),
-                action: SnackBarAction(
-                  label: 'Dismiss',
-                  onPressed: () {},
-                ),
-              ),
-            );
+            _showCustomDialog(context);
           },
           child: const Icon(Icons.add),
         ),
@@ -113,38 +104,31 @@ class HomePage extends StatelessWidget {
             child: const Text('Elevated Button'),
           ),
           const SizedBox(height: 16),
-          TextButton(
-            onPressed: () {},
-            child: const Text('Text Button'),
-          ),
+          LinearProgressIndicator(),
           const SizedBox(height: 16),
-          OutlinedButton(
-            onPressed: () {},
-            child: const Text('Outlined Button'),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: 'Enter Text',
-              hintText: 'Type something...',
-            ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'This is a Card widget',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                )
-              ),
-            ),
-          ),
+          CircularProgressIndicator(),
         ],
       ),
+    );
+  }
+
+  void _showCustomDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Modal Title',
+              style: Theme.of(context).dialogTheme.titleTextStyle),
+          content: Text('This is the modal content.',
+              style: Theme.of(context).dialogTheme.contentTextStyle),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('CLOSE'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
