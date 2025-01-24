@@ -31,12 +31,25 @@ class AppTheme {
         color: AppColors.primary500,
         fillColor: AppColors.white,
       ),
+
+      // --- Input Decoration ---
       inputDecorationTheme: _inputDecorationTheme(
         context,
-        primaryColor: AppColors.primary500,
         fillColor: AppColors.light,
+        filled: true,
+        enabledBorderColor: AppColors.primary500,
+        focusedBorderColor: AppColors.primary500,
+        errorBorderColor: AppColors.error,
+        disabledBorderColor: AppColors.gray300,
         hintColor: AppColors.black,
+        labelStyle: AppTypography.body1(context).copyWith(
+          color: AppColors.primary500,
+        ),
+        hintStyle: AppTypography.body2(context).copyWith(
+          color: AppColors.black.withOpacity(0.5),
+        ),
       ),
+
       floatingActionButtonTheme: _floatingActionButtonTheme(
         color: AppColors.primary500,
       ),
@@ -57,7 +70,7 @@ class AppTheme {
       tabBarTheme: _tabBarTheme(
         context,
         selectedColor: AppColors.primary500,
-        unselectedColor: AppColors.gray800,
+        unselectedColor: AppColors.gray200,
       ),
       progressIndicatorTheme: _progressIndicatorTheme(
         color: AppColors.primary500,
@@ -80,7 +93,7 @@ class AppTheme {
         foregroundColor: AppColors.white,
       ),
       textTheme: _textTheme(context)
-          .apply(bodyColor: AppColors.white, displayColor: AppColors.white),
+          .apply(bodyColor: AppColors.black, displayColor: AppColors.white),
       elevatedButtonTheme: _elevatedButtonTheme(
         context,
         color: AppColors.primary700,
@@ -96,9 +109,19 @@ class AppTheme {
       ),
       inputDecorationTheme: _inputDecorationTheme(
         context,
-        primaryColor: AppColors.primary500,
         fillColor: AppColors.gray200,
+        filled: true,
+        enabledBorderColor: AppColors.primary500,
+        focusedBorderColor: AppColors.primary500,
+        errorBorderColor: AppColors.error,
+        disabledBorderColor: AppColors.gray500,
         hintColor: AppColors.gray500,
+        labelStyle: AppTypography.body1(context).copyWith(
+          color: AppColors.primary500,
+        ),
+        hintStyle: AppTypography.body2(context).copyWith(
+          color: AppColors.gray500,
+        ),
       ),
       floatingActionButtonTheme: _floatingActionButtonTheme(
         color: AppColors.primary700,
@@ -120,7 +143,7 @@ class AppTheme {
       tabBarTheme: _tabBarTheme(
         context,
         selectedColor: AppColors.primary700,
-        unselectedColor: AppColors.gray400,
+        unselectedColor: AppColors.gray200,
       ),
       progressIndicatorTheme: _progressIndicatorTheme(
         color: AppColors.primary700,
@@ -172,19 +195,32 @@ class AppTheme {
 
   static TextTheme _textTheme(BuildContext context) {
     return TextTheme(
-      displayLarge: AppTypography.header1(context).copyWith(color: AppColors.gray900),
-      displayMedium: AppTypography.header2(context).copyWith(color: AppColors.gray900),
-      displaySmall: AppTypography.header3(context).copyWith(color: AppColors.gray900),
-      headlineLarge: AppTypography.header4(context).copyWith(color: AppColors.gray900),
-      headlineMedium: AppTypography.header5(context).copyWith(color: AppColors.gray900),
-      headlineSmall: AppTypography.header6(context).copyWith(color: AppColors.gray900),
-      titleLarge: AppTypography.subtitle1(context).copyWith(color: AppColors.gray900),
-      titleMedium: AppTypography.subtitle2(context).copyWith(color: AppColors.gray900),
-      bodyLarge: AppTypography.body1(context).copyWith(color: AppColors.gray900),
-      bodyMedium: AppTypography.body2(context).copyWith(color: AppColors.gray900),
-      labelLarge: AppTypography.label(context).copyWith(color: AppColors.gray900),
-      labelMedium: AppTypography.button(context).copyWith(color: AppColors.gray900),
-      bodySmall: AppTypography.caption(context).copyWith(color: AppColors.gray900),
+      displayLarge:
+          AppTypography.header1(context).copyWith(color: AppColors.gray900),
+      displayMedium:
+          AppTypography.header2(context).copyWith(color: AppColors.gray900),
+      displaySmall:
+          AppTypography.header3(context).copyWith(color: AppColors.gray900),
+      headlineLarge:
+          AppTypography.header4(context).copyWith(color: AppColors.gray900),
+      headlineMedium:
+          AppTypography.header5(context).copyWith(color: AppColors.gray900),
+      headlineSmall:
+          AppTypography.header6(context).copyWith(color: AppColors.gray900),
+      titleLarge:
+          AppTypography.subtitle1(context).copyWith(color: AppColors.gray900),
+      titleMedium:
+          AppTypography.subtitle2(context).copyWith(color: AppColors.gray900),
+      bodyLarge:
+          AppTypography.body1(context).copyWith(color: AppColors.gray900),
+      bodyMedium:
+          AppTypography.body2(context).copyWith(color: AppColors.gray900),
+      labelLarge:
+          AppTypography.label(context).copyWith(color: AppColors.gray900),
+      labelMedium:
+          AppTypography.button(context).copyWith(color: AppColors.gray900),
+      bodySmall:
+          AppTypography.caption(context).copyWith(color: AppColors.gray900),
     );
   }
 
@@ -230,27 +266,155 @@ class AppTheme {
 
   static InputDecorationTheme _inputDecorationTheme(
     BuildContext context, {
-    required Color primaryColor,
+    // Basic colors
     required Color fillColor,
+    bool filled = true,
+
+    // Border radius & widths
+    double borderRadius = 8.0,
+    double enabledBorderWidth = 1.0,
+    double focusedBorderWidth = 2.0,
+    double errorBorderWidth = 1.0,
+    double disabledBorderWidth = 1.0,
+
+    // Border colors
+    required Color enabledBorderColor,
+    required Color focusedBorderColor,
     required Color hintColor,
+    Color? errorBorderColor,
+    Color? disabledBorderColor,
+
+    // Label, hint, helper, error texts
+    TextStyle? labelStyle,
+    TextStyle? floatingLabelStyle,
+    TextStyle? helperStyle,
+    int? helperMaxLines,
+    TextStyle? hintStyle,
+    Duration? hintFadeDuration,
+    TextStyle? errorStyle,
+    int? errorMaxLines,
+
+    // Label & hint behaviors
+    FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.auto,
+    FloatingLabelAlignment floatingLabelAlignment =
+        FloatingLabelAlignment.start,
+    bool alignLabelWithHint = false,
+
+    // Content layout
+    bool isDense = false,
+    bool isCollapsed = false,
+    EdgeInsetsGeometry? contentPadding,
+    BoxConstraints? constraints,
+
+    // Icon or prefix/suffix customizations
+    Color? iconColor,
+    TextStyle? prefixStyle,
+    Color? prefixIconColor,
+    BoxConstraints? prefixIconConstraints,
+    TextStyle? suffixStyle,
+    Color? suffixIconColor,
+    BoxConstraints? suffixIconConstraints,
+    TextStyle? counterStyle,
+
+    // Focus & hover colors
+    Color? focusColor,
+    Color? hoverColor,
+
+    // If you want to pass fully custom borders
+    InputBorder? enabledBorderOverride,
+    InputBorder? focusedBorderOverride,
+    InputBorder? errorBorderOverride,
+    InputBorder? focusedErrorBorderOverride,
+    InputBorder? disabledBorderOverride,
+    InputBorder? globalBorderOverride,
   }) {
+    // Helper method to build OutlineInputBorder with standard defaults.
+    OutlineInputBorder _outline({
+      required Color color,
+      required double width,
+    }) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadius),
+        borderSide: BorderSide(color: color, width: width),
+      );
+    }
+
     return InputDecorationTheme(
-      filled: true,
+      filled: filled,
       fillColor: fillColor,
-      border: OutlineInputBorder(
-        borderSide: BorderSide(color: AppColors.gray300),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: primaryColor),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: primaryColor, width: 2),
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      labelStyle: AppTypography.body1(context).copyWith(color: primaryColor),
-      hintStyle: AppTypography.body2(context).copyWith(color: hintColor),
+
+      // Overall border (if you don't specify any state border)
+      border: globalBorderOverride ??
+          _outline(
+            color: AppColors.gray300, // e.g. default fallback color
+            width: enabledBorderWidth,
+          ),
+
+      // Enabled / focused / error / disabled borders
+      enabledBorder: enabledBorderOverride ??
+          _outline(
+            color: enabledBorderColor,
+            width: enabledBorderWidth,
+          ),
+      focusedBorder: focusedBorderOverride ??
+          _outline(
+            color: focusedBorderColor,
+            width: focusedBorderWidth,
+          ),
+      errorBorder: errorBorderOverride ??
+          _outline(
+            color: errorBorderColor ?? Colors.red,
+            width: errorBorderWidth,
+          ),
+      focusedErrorBorder: focusedErrorBorderOverride ??
+          _outline(
+            color: errorBorderColor ?? Colors.red,
+            width: focusedBorderWidth,
+          ),
+      disabledBorder: disabledBorderOverride ??
+          _outline(
+            color: disabledBorderColor ?? AppColors.gray300,
+            width: disabledBorderWidth,
+          ),
+
+      // Text styles
+      labelStyle: labelStyle,
+      floatingLabelStyle: floatingLabelStyle,
+      helperStyle: helperStyle,
+      helperMaxLines: helperMaxLines,
+      hintStyle: hintStyle,
+      hintFadeDuration: hintFadeDuration,
+      errorStyle: errorStyle,
+      errorMaxLines: errorMaxLines,
+
+      // Label & hint behaviors
+      floatingLabelBehavior: floatingLabelBehavior,
+      floatingLabelAlignment: floatingLabelAlignment,
+      alignLabelWithHint: alignLabelWithHint,
+
+      // Layout & padding
+      isDense: isDense,
+      isCollapsed: isCollapsed,
+      contentPadding: contentPadding ??
+          const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
+      constraints: constraints,
+
+      // Icons & prefix/suffix
+      iconColor: iconColor,
+      prefixStyle: prefixStyle,
+      prefixIconColor: prefixIconColor,
+      prefixIconConstraints: prefixIconConstraints,
+      suffixStyle: suffixStyle,
+      suffixIconColor: suffixIconColor,
+      suffixIconConstraints: suffixIconConstraints,
+      counterStyle: counterStyle,
+
+      // Hover & focus colors
+      focusColor: focusColor,
+      hoverColor: hoverColor,
     );
   }
 
