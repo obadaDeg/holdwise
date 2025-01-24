@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/themes.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
 import 'app/config/firebase_options.dart';
 import 'package:flutter/material.dart';
 
@@ -12,55 +14,47 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system; // Default theme mode
-
-  void _toggleTheme() {
-    setState(() {
-      // Toggle between light and dark theme
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HoldWise',
-      theme: AppTheme.lightTheme(context), // Light theme
-      darkTheme: AppTheme.darkTheme(context), // Dark theme
-      themeMode: _themeMode, // Current theme mode
-      home: HomePage(onToggleTheme: _toggleTheme), // Pass toggle function to HomePage
+    return BlocProvider(
+      create: (_) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp(
+            title: 'HoldWise',
+            theme: AppTheme.lightTheme(context),
+            darkTheme: AppTheme.darkTheme(context),
+            themeMode: themeMode,
+            home: HomePage(),
+          );
+        },
+      ),
     );
   }
 }
-
 class HomePage extends StatelessWidget {
-  final VoidCallback onToggleTheme;
-
-  const HomePage({Key? key, required this.onToggleTheme}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Number of tabs
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('HoldWise App Theme'),
           actions: [
             IconButton(
               icon: Icon(
-                Theme.of(context).brightness == Brightness.dark
+                context.read<ThemeCubit>().state == ThemeMode.dark
                     ? Icons.light_mode
                     : Icons.dark_mode,
               ),
-              onPressed: onToggleTheme,
+              onPressed: () {
+                context.read<ThemeCubit>().toggleTheme();
+              },
             ),
           ],
           bottom: const TabBar(
