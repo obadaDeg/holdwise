@@ -16,6 +16,4 @@ class AppRoutes {
   static const String contact = '/contact';
   static const String notFound = '/not-found';
   static const String chat = '/chat';
-  
-
 }

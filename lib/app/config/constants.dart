@@ -139,4 +139,8 @@ class Constants {
   static double getCardMargin(BuildContext context) {
     return MediaQuery.of(context).size.width * 0.04; // 4% of screen width
   }
+
+  static double getBorderRadius(BuildContext context) {
+    return MediaQuery.of(context).size.width * 0.05; // 5% of screen width
+  }
 }

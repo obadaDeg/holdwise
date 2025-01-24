@@ -2,48 +2,51 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors
-  static const Color primary100 = Color(0xFFF3E5F5);
-  static const Color primary200 = Color(0xFFE1BEE7);
-  static const Color primary300 = Color(0xFFCE93D8);
-  static const Color primary400 = Color(0xFFBA68C8);
+  static const Color primary100 = Color(0xFFE6E2F8);
+  static const Color primary200 = Color(0xFFCEC4F6);
+  static const Color primary300 = Color(0xFFB2A2F9);
+  static const Color primary400 = Color(0xFF9178FA);
   static const Color primary500 = Color(0xFF7152F3); // Base color
-  static const Color primary600 = Color(0xFF9C27B0);
-  static const Color primary700 = Color(0xFF8E24AA);
-  static const Color primary800 = Color(0xFF7B1FA2);
-  static const Color primary900 = Color(0xFF6A1B9A);
+  static const Color primary600 = Color(0xFF5D3DE7);
+  static const Color primary700 = Color(0xFF4F31D0);
+  static const Color primary800 = Color(0xFF3517B4);
+  static const Color primary900 = Color(0xFF250C92);
 
   // Secondary Colors
-  static const Color secondary100 = Color(0xFFF8BBD0);
-  static const Color secondary200 = Color(0xFFF48FB1);
-  static const Color secondary300 = Color(0xFFF06292);
-  static const Color secondary400 = Color(0xFFEC407A);
-  static const Color secondary500 = Color(0xFFE91E63); // Base color
-  static const Color secondary600 = Color(0xFFD81B60);
-  static const Color secondary700 = Color(0xFFC2185B);
-  static const Color secondary800 = Color(0xFFAD1457);
-  static const Color secondary900 = Color(0xFF880E4F);
+  static const Color secondary100 = Color(0xFFE1F1BC);
+  static const Color secondary200 = Color(0xFFCEE993);
+  static const Color secondary300 = Color(0xFFBCDE6B);
+  static const Color secondary400 = Color(0xFFAFD751);
+  static const Color secondary500 = Color(0xFFA3D139); // Base color
+  static const Color secondary600 = Color(0xFF97BD33);
+  static const Color secondary700 = Color(0xFF88A52A);
+  static const Color secondary800 = Color(0xFF798D21);
+  static const Color secondary900 = Color(0xFF626615);
 
   // Tertiary Colors
-  static const Color tertiary100 = Color(0xFFC8E6C9);
-  static const Color tertiary200 = Color(0xFFA5D6A7);
-  static const Color tertiary300 = Color(0xFF81C784);
-  static const Color tertiary400 = Color(0xFF66BB6A);
-  static const Color tertiary500 = Color(0xFF4CAF50); // Base color
-  static const Color tertiary600 = Color(0xFF43A047);
-  static const Color tertiary700 = Color(0xFF388E3C);
-  static const Color tertiary800 = Color(0xFF2E7D32);
-  static const Color tertiary900 = Color(0xFF1B5E20);
+  static const Color tertiary100 = Color(0xFFF0B0D9);
+  static const Color tertiary200 = Color(0xFFE67BC2);
+  static const Color tertiary300 = Color(0xFFD846AB);
+  static const Color tertiary400 = Color(0xFFCD0D9B);
+  static const Color tertiary500 = Color(0xFFB21589); // Base color
+  static const Color tertiary600 = Color(0xFFAF0A87);
+  static const Color tertiary700 = Color(0xFF9B0982);
+  static const Color tertiary800 = Color(0xFF8A087C);
+  static const Color tertiary900 = Color(0xFF6C0772);
 
   // Neutral Colors
-  static const Color gray500 = Color(0xFF9E9E9E);
+  static const Color gray500 = Color(0xFFA2A1A8);
   static const Color white = Colors.white;
   static const Color black = Colors.black;
+  static const Color transparent = Colors.transparent;
+  static const Color dark = Color(0xFF16151C);
+  static const Color light = Color(0xFFD9E1E1);
 
   // Feedback Colors
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFFC107);
   static const Color error = Color(0xFFF44336);
-  static const Color info = Color(0xFF2196F3);
+  static const Color info = Color(0xFFD9E1E1);
 
   // Opacity Utility (Dynamically)
   static Color withOpacity(Color color, double opacity) {
@@ -60,146 +63,30 @@ class AppColors {
   }
 }
 
-class AppTypography {
-  static TextStyle baseStyle(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width /
-        375; // Assume 375 as base width for scaling
-    return TextStyle(
-      fontFamily: 'Lexend',
-      color: Colors.black,
-      fontSize: 16 * scaleFactor,
-    );
-  }
+class Gradients {
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF7FBE30), Color(0xFF30A5BE)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    tileMode: TileMode.clamp,
+  );
 
-  static TextStyle header1(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 80 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: -1.5,
-    );
-  }
+  static const LinearGradient secondaryGradient = LinearGradient(
+    colors: [Color(0xFF30BEB6), Color(0xFF3069BE)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    tileMode: TileMode.clamp,
+  );
 
-  static TextStyle header2(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 60 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: -0.5,
-    );
-  }
-
-  static TextStyle header3(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 48 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0,
-    );
-  }
-
-  static TextStyle header4(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 34 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0.25,
-    );
-  }
-
-  static TextStyle header5(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 24 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0,
-    );
-  }
-
-  static TextStyle header6(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 20 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0.15,
-    );
-  }
-
-  static TextStyle subtitle1(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 18 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 0.15,
-    );
-  }
-
-  static TextStyle subtitle2(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 16 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 0.1,
-    );
-  }
-
-  static TextStyle body1(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 16 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 0.5,
-    );
-  }
-
-  static TextStyle body2(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 14 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 0.25,
-    );
-  }
-
-  static TextStyle button(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 14 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 1.25,
-    );
-  }
-
-  static TextStyle caption(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 12 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 0.4,
-    );
-  }
-
-  static TextStyle overline(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 10 * scaleFactor,
-      fontWeight: FontWeight.normal,
-      letterSpacing: 1.5,
-    );
-  }
-
-  static TextStyle label(BuildContext context) {
-    double scaleFactor = MediaQuery.of(context).size.width / 375;
-    return baseStyle(context).copyWith(
-      fontSize: 16 * scaleFactor,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0.75,
-    );
-  }
-
-  static TextStyle applyColor(TextStyle style, Color color) {
-    return style.copyWith(color: color);
-  }
+  static const LinearGradient tertiaryGradient = LinearGradient(
+    colors: [Color(0xFF5D30BE), Color(0xFFB330BE)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 1.0],
+    tileMode: TileMode.clamp,
+  );
 }
 
 
@@ -262,3 +149,53 @@ class DarkColors {
 }
 
  */
+
+
+class AppIcons {
+  static const String home = 'assets/icons/home.svg';
+  static const String search = 'assets/icons/search.svg';
+  static const String profile = 'assets/icons/profile.svg';
+  static const String settings = 'assets/icons/settings.svg';
+  static const String logout = 'assets/icons/logout.svg';
+  static const String back = 'assets/icons/back.svg';
+  static const String close = 'assets/icons/close.svg';
+  static const String menu = 'assets/icons/menu.svg';
+  static const String notification = 'assets/icons/notification.svg';
+  static const String notificationOff = 'assets/icons/notification_off.svg';
+  static const String notificationOn = 'assets/icons/notification_on.svg';
+  static const String notificationError = 'assets/icons/notification_error.svg';
+  static const String notificationWarning = 'assets/icons/notification_warning.svg';
+  static const String notificationSuccess = 'assets/icons/notification_success.svg';
+  static const String notificationInfo = 'assets/icons/notification_info.svg';
+  static const String error = 'assets/icons/error.svg';
+  static const String warning = 'assets/icons/warning.svg';
+  static const String success = 'assets/icons/success.svg';
+  static const String info = 'assets/icons/info.svg';
+  static const String empty = 'assets/icons/empty.svg';
+  static const String emptySearch = 'assets/icons/empty_search.svg';
+  static const String emptyNotification = 'assets/icons/empty_notification.svg';
+  static const String emptyProfile = 'assets/icons/empty_profile.svg';
+  static const String emptySettings = 'assets/icons/empty_settings.svg';
+  static const String emptyError = 'assets/icons/empty_error.svg';
+  static const String emptyWarning = 'assets/icons/empty_warning.svg';
+  static const String emptySuccess = 'assets/icons/empty_success.svg';
+  static const String emptyInfo = 'assets/icons/empty_info.svg';
+  static const String emptyData = 'assets/icons/empty_data.svg';
+  static const String emptySearchData = 'assets/icons/empty_search_data.svg';
+  static const String emptyNotificationData = 'assets/icons/empty_notification_data.svg';
+  static const String emptyProfileData = 'assets/icons/empty_profile_data.svg';
+  static const String emptySettingsData = 'assets/icons/empty_settings_data.svg';
+  static const String emptyErrorData = 'assets/icons/empty_error_data.svg';
+  static const String emptyWarningData = 'assets/icons/empty_warning_data.svg';
+  static const String emptySuccessData = 'assets/icons/empty_success_data.svg';
+  static const String emptyInfoData = 'assets/icons/empty_info_data.svg';
+
+  static const String appLogo = 'assets/icons/app_logo.png';
+  static const String defaultImage = 'assets/images/default.png';
+  static const String defaultAvatar = 'assets/images/avatar.png';
+
+  static const String google = 'assets/icons/google.svg';
+  static const String facebook = 'assets/icons/facebook.svg';
+
+
+}
