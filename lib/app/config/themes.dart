@@ -94,7 +94,7 @@ class AppTheme {
         foregroundColor: AppColors.white,
       ),
       textTheme: _textTheme(context)
-          .apply(bodyColor: AppColors.black, displayColor: AppColors.white),
+          .apply(bodyColor: AppColors.white, displayColor: AppColors.white, fontFamily: 'Lexend'),
       elevatedButtonTheme: _elevatedButtonTheme(
         context,
         color: AppColors.primary700,

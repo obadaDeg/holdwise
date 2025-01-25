@@ -6,10 +6,18 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 class AuthAuthenticated extends AuthState {
   final User user;
-  AuthAuthenticated(this.user);
+  final String token;
+  AuthAuthenticated(this.user, this.token);
 }
 class AuthError extends AuthState {
   final String message;
   AuthError(this.message);
 }
+
+class AuthSuccess extends AuthState {
+  final String message;
+  AuthSuccess(this.message);
+}
+
+class AuthLoggingOut extends AuthState {}
 class AuthLoggedOut extends AuthState {}

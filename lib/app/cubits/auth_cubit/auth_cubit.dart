@@ -1,20 +1,47 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
 part 'auth_state.dart';
-// Authentication States
 
 class AuthCubit extends Cubit<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  StreamSubscription<User?>? _authSubscription;
 
-  AuthCubit() : super(AuthInitial());
+  AuthCubit() : super(AuthInitial()) {
+    _authSubscription = _auth.authStateChanges().listen(_authStateListener);
+  }
 
   // Check if user is already logged in
-  void checkUser() {
-    final user = _auth.currentUser;
+  void _authStateListener(User? user) {
     if (user != null) {
-      emit(AuthAuthenticated(user));
+      _validateToken(user);
     } else {
       emit(AuthLoggedOut());
+    }
+  }
+
+  void checkAuthStatus() {
+    final User? user = _auth.currentUser;
+    if (user != null) {
+      _validateToken(user);
+    } else {
+      emit(AuthLoggedOut());
+    }
+  }
+
+  // Validate token based on a custom expiration (1 month)
+  void _validateToken(User user) async {
+    final idTokenResult = await user.getIdTokenResult();
+    final DateTime lastAuthTime =
+        idTokenResult.issuedAtTime!; // Directly use as DateTime
+
+    final DateTime oneMonthAgo =
+        DateTime.now().subtract(const Duration(days: 30));
+    if (lastAuthTime.isBefore(oneMonthAgo)) {
+      await logout();
+    } else {
+      emit(AuthAuthenticated(user, idTokenResult.token!));
     }
   }
 
@@ -26,9 +53,13 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         password: password,
       );
-      emit(AuthAuthenticated(credential.user!));
+      _validateToken(credential.user!);
     } catch (e) {
-      emit(AuthError(e.toString()));
+      if (e is FirebaseAuthException) {
+        emit(AuthError(_getErrorMessage(e)));
+      } else {
+        emit(AuthError('An unknown error occurred.'));
+      }
     }
   }
 
@@ -40,9 +71,14 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         password: password,
       );
-      emit(AuthAuthenticated(credential.user!));
+      emit(AuthSuccess('Signup successful! Welcome to HoldWise!'));
+      _validateToken(credential.user!);
     } catch (e) {
-      emit(AuthError(e.toString()));
+      if (e is FirebaseAuthException) {
+        emit(AuthError(_getErrorMessage(e)));
+      } else {
+        emit(AuthError('An unknown error occurred.'));
+      }
     }
   }
 
@@ -52,50 +88,37 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoggedOut());
   }
 
-  Future<String> resetPassword(String email) async {
+  // Reset Password Method
+  Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-      return 'Password reset email sent! Check your inbox.';
+      emit(AuthSuccess('Password reset email sent! Check your inbox.'));
     } catch (e) {
-      return 'Error: ${e.toString()}';
+      if (e is FirebaseAuthException) {
+        emit(AuthError(_getErrorMessage(e)));
+      } else {
+        emit(AuthError('An unknown error occurred.'));
+      }
     }
   }
 
-  Future<void> deleteAccount() async {
-    try {
-      await _auth.currentUser!.delete();
-      emit(AuthLoggedOut());
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
+  // Cleanup subscription
+  @override
+  Future<void> close() {
+    _authSubscription?.cancel();
+    return super.close();
   }
 
-  Future<void> updatePhoneNumber(PhoneAuthCredential phoneNumber) async {
-    try {
-      await _auth.currentUser!.updatePhoneNumber(phoneNumber);
-      emit(AuthAuthenticated(_auth.currentUser!));
-    } catch (e) {
-      emit(AuthError(e.toString()));
-    }
-  }
-
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
-    try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          emit(AuthError(e.message!));
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          emit(AuthError('Code sent!'));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
-    } catch (e) {
-      emit(AuthError(e.toString()));
+  String _getErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return 'No user found for this email.';
+      case 'wrong-password':
+        return 'Incorrect password.';
+      case 'email-already-in-use':
+        return 'This email is already registered.';
+      default:
+        return 'An unexpected error occurred. Please try again.';
     }
   }
 }
