@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "599726188654",
+    "project_id": "holdwise-2397a",
+    "storage_bucket": "holdwise-2397a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599726188654:android:9bb5a9b347214514e31e7f",
+        "android_client_info": {
+          "package_name": "com.anima.holdwise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599726188654-35p9778ca36f6t6a7pt2gneoi539jpea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anima.holdwise",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1yAs2pYVnQKs7LSHuIWVaL3LfsXTQi3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "599726188654-g401ajrdagdahqpjimj2ql74r57vconr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anima.holdwise"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599726188654:android:b1c990cdd6fac7e9e31e7f",
+        "android_client_info": {
+          "package_name": "com.example.holdwise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1yAs2pYVnQKs7LSHuIWVaL3LfsXTQi3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "599726188654-g401ajrdagdahqpjimj2ql74r57vconr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anima.holdwise"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
