@@ -8,8 +8,14 @@ class AppRouter {
     switch (settings.name) {
       case AppRoutes.auth:
         return CupertinoPageRoute(
-          builder: (_) => const AuthPage(),
+          builder: (_) => const AuthPage(
+            card: Text('Auth Card'),
+          ),
         );
+      // case AppRoutes.signup:
+      //   return CupertinoPageRoute(
+      //     builder: (_) => const AuthPage(),
+      //   );
       case AppRoutes.forgotPassword:
         return CupertinoPageRoute(
           builder: (_) => const Scaffold(

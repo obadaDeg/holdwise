@@ -84,6 +84,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   // Logout Method
   Future<void> logout() async {
+    emit(AuthLoggingOut());
     await _auth.signOut();
     emit(AuthLoggedOut());
   }
@@ -91,6 +92,7 @@ class AuthCubit extends Cubit<AuthState> {
   // Reset Password Method
   Future<void> resetPassword(String email) async {
     try {
+      emit(AuthLoading());
       await _auth.sendPasswordResetEmail(email: email);
       emit(AuthSuccess('Password reset email sent! Check your inbox.'));
     } catch (e) {

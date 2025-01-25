@@ -1,9 +1,8 @@
-
 class AppRoutes {
   static const String home = '/';
   static const String auth = '/login';
   static const String forgotPassword = '/forgot-password';
-  static const String register = '/register';
+  static const String signup = '/signup';
   static const String reports = '/reports';
   static const String reportDetails = '/report-details';
   static const String createReport = '/create-report';
@@ -16,4 +15,18 @@ class AppRoutes {
   static const String contact = '/contact';
   static const String notFound = '/not-found';
   static const String chat = '/chat';
+  static const String chatDetails = '/chat-details';
+  static const String notifications = '/notifications';
+  static const String search = '/search';
+  static const String searchResults = '/search-results';
+  static const String appointments = '/appointments';
+  static const String appointmentDetails = '/appointment-details';
+  static const String createAppointment = '/create-appointment';
+  static const String editAppointment = '/edit-appointment';
+  static const String doctors = '/doctors';
+  static const String doctorDetails = '/doctor-details';
+  static const String createDoctor = '/create-doctor';
+  static const String editDoctor = '/edit-doctor';
+  static const String categories = '/categories';
+  static const String categoryDetails = '/category-details';
 }
