@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:holdwise/app/config/colors.dart';
 import 'package:holdwise/app/utils/build_dialog.dart';
 
-class ErrorDialog extends StatelessWidget {
+class SuccessDialog extends StatelessWidget {
   final String title;
   final String message;
-  final VoidCallback? onRetry;
+  final VoidCallback? onConfirm;
 
-  const ErrorDialog({
+  const SuccessDialog({
     required this.title,
     required this.message,
-    this.onRetry,
+    this.onConfirm,
     Key? key,
   }) : super(key: key);
 
@@ -18,11 +18,11 @@ class ErrorDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return buildDialog(
       context,
-      AppColors.error,
-      Icons.error_outline,
+      AppColors.success,
+      Icons.check_circle_outline,
       title,
       message,
-      onRetry,
+      onConfirm,
     );
   }
 }

@@ -14,7 +14,7 @@ class ForgotPasswordEmailInputCard extends StatelessWidget {
     final screenPadding = MediaQuery.of(context).size.width * 0.005;
 
     void onSendResetEmail() {
-      print('Send reset email to: ${emailController.text}');
+      
     }
 
     return Padding(

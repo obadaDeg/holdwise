@@ -21,3 +21,8 @@ class AuthSuccess extends AuthState {
 
 class AuthLoggingOut extends AuthState {}
 class AuthLoggedOut extends AuthState {}
+
+class PasswordResetEmailSent extends AuthState {}
+class EmailVerificationSent extends AuthState {}
+
+
