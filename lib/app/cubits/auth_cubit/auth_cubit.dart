@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holdwise/app/utils/api_path.dart';
+import 'package:http/http.dart' as http;
 import 'dart:async';
 
 import 'package:holdwise/common/services/firestore_services.dart';
@@ -53,7 +55,8 @@ class AuthCubit extends Cubit<AuthState> {
         if (role == 'admin') {
           emit(AuthAuthenticated(user, idTokenResult.token!, isAdmin: true));
         } else if (role == 'specialist') {
-          emit(AuthAuthenticated(user, idTokenResult.token!, isSpecialist: true));
+          emit(AuthAuthenticated(user, idTokenResult.token!,
+              isSpecialist: true));
         } else if (role == 'patient') {
           emit(AuthAuthenticated(user, idTokenResult.token!, isPatient: true));
         }
@@ -234,11 +237,14 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // Google Signup
+
   Future<void> googleSignup() async {
     emit(AuthLoading());
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      debugPrint('Google Sign-in initiated...');
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn(); // the problem with this line
+      debugPrint('Google Sign-in completed...');
       if (googleUser == null) {
         emit(AuthError('Google Sign-in cancelled.'));
         return;
@@ -253,10 +259,26 @@ class AuthCubit extends Cubit<AuthState> {
 
       UserCredential userCredential =
           await _auth.signInWithCredential(credential);
-      emit(AuthSuccess('Signup with Google successful!'));
-      _validateToken(userCredential.user!);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        // Call your backend to set custom claims
+        final response = await http.post(
+          // since it require a backend server to set custom claims
+          Uri.parse('http://localhost:3000/setCustomClaims'),
+          body: {'uid': user.uid},
+        );
+
+        if (response.statusCode == 200) {
+          emit(AuthSuccess('Signup with Google successful!'));
+          _validateToken(user);
+        } else {
+          emit(AuthError('Failed to set custom claims.'));
+        }
+      }
     } catch (e) {
-      emit(AuthError('Google Signup failed: ${e.toString()}'));
+      print('Error: $e');
+      emit(AuthError('Google Signup failed, please try again.'));
     }
   }
 
