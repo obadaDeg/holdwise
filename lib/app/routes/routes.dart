@@ -24,10 +24,10 @@ class AppRoutes {
   static const String appointmentDetails = '/appointment-details';
   static const String createAppointment = '/create-appointment';
   static const String editAppointment = '/edit-appointment';
-  static const String doctors = '/doctors';
-  static const String doctorDetails = '/doctor-details';
-  static const String createDoctor = '/create-doctor';
-  static const String editDoctor = '/edit-doctor';
+  static const String specialists = '/specialists';
+  static const String specialistDetails = '/specialist-details';
+  static const String createSpecialist = '/create-specialist';
+  static const String editSpecialist = '/edit-specialist';
   static const String categories = '/categories';
   static const String categoryDetails = '/category-details';
 }

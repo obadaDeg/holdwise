@@ -1,25 +1,80 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:holdwise/app/utils/api_path.dart';
 import 'dart:async';
+
+import 'package:holdwise/common/services/firestore_services.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final firestoreServices = FirestoreServices.instance;
   StreamSubscription<User?>? _authSubscription;
+  Timer? _tokenValidationTimer;
 
   AuthCubit() : super(AuthInitial()) {
     _authSubscription = _auth.authStateChanges().listen(_authStateListener);
   }
 
-  // Check if user is already logged in
   void _authStateListener(User? user) {
     if (user != null) {
       _validateToken(user);
     } else {
       emit(AuthLoggedOut());
     }
+  }
+
+  // Check if user is already logged in
+  void _validateToken(User user) async {
+    try {
+      final idTokenResult = await user.getIdTokenResult();
+      final tokenValidAfter =
+          DateTime.parse(idTokenResult.claims!['tokensValidAfterTime']);
+
+      // check disabled user
+      if (user.emailVerified == false) {
+        emit(AuthError('Email is not verified. Please verify your email.'));
+        return;
+      }
+
+      // if (await user.disabled == null) {
+      //   emit(AuthError('Token is invalid. Please log in again.'));
+      //   return;
+      // }
+
+      // Check if the token is expired
+      if (DateTime.now().isAfter(tokenValidAfter)) {
+        await logout(); // Automatically log the user out
+        emit(AuthError('Session expired. Please log in again.'));
+      } else {
+        final role = idTokenResult.claims?['role'] ?? 'patient';
+        if (role == 'admin') {
+          emit(AuthAuthenticated(user, idTokenResult.token!, isAdmin: true));
+        } else if (role == 'specialist') {
+          emit(AuthAuthenticated(user, idTokenResult.token!, isSpecialist: true));
+        } else if (role == 'patient') {
+          emit(AuthAuthenticated(user, idTokenResult.token!, isPatient: true));
+        }
+      }
+    } catch (e) {
+      emit(AuthError('Token validation failed: ${e.toString()}'));
+    }
+  }
+
+  void startTokenValidationTimer() {
+    _tokenValidationTimer =
+        Timer.periodic(const Duration(minutes: 10), (_) async {
+      final user = _auth.currentUser;
+      if (user != null) {
+        _validateToken(user);
+      }
+    });
+  }
+
+  void stopTokenValidationTimer() {
+    _tokenValidationTimer?.cancel();
   }
 
   void checkAuthStatus() {
@@ -31,35 +86,39 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Validate token based on a custom expiration (1 month)
-  void _validateToken(User user) async {
-    final idTokenResult = await user.getIdTokenResult();
-    final DateTime lastAuthTime =
-        idTokenResult.issuedAtTime!; // Directly use as DateTime
-
-    final DateTime oneMonthAgo =
-        DateTime.now().subtract(const Duration(days: 30));
-    if (lastAuthTime.isBefore(oneMonthAgo)) {
-      await logout();
-    } else {
-      emit(AuthAuthenticated(user, idTokenResult.token!));
-    }
-  }
-
   // Login Method
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
     try {
-      UserCredential credential = await _auth.signInWithEmailAndPassword(
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      _validateToken(credential.user!);
+
+      final user = credential.user;
+      if (user != null) {
+        final idTokenResult = await user.getIdTokenResult();
+        final lastSignInTime = user.metadata.lastSignInTime;
+        final creationTime = user.metadata.creationTime;
+
+        // Update metadata in Firestore
+        await firestoreServices.setData(
+          path: ApiPath.user(user.uid),
+          data: {
+            'lastSignInTime': lastSignInTime?.toIso8601String(),
+            'creationTime': creationTime?.toIso8601String(),
+          },
+        );
+
+        _validateToken(user);
+      } else {
+        emit(AuthError('Login failed. User not found.'));
+      }
     } catch (e) {
       if (e is FirebaseAuthException) {
         emit(AuthError(_getErrorMessage(e)));
       } else {
-        emit(AuthError('An unknown error occurred.'));
+        emit(AuthError('An unexpected error occurred.'));
       }
     }
   }
@@ -68,17 +127,36 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signup(String email, String password) async {
     emit(AuthLoading());
     try {
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+      final UserCredential credential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      emit(AuthSuccess('Signup successful! Welcome to HoldWise!'));
-      _validateToken(credential.user!);
+
+      final user = credential.user;
+      if (user != null) {
+        // Send email verification
+        await user.sendEmailVerification();
+
+        // Save metadata to Firestore
+        final creationTime = user.metadata.creationTime;
+        await firestoreServices.setData(
+          path: ApiPath.user(user.uid),
+          data: {
+            'uid': user.uid,
+            'email': user.email,
+            'creationTime': creationTime?.toIso8601String(),
+            'lastSignInTime': null,
+          },
+        );
+
+        emit(AuthSuccess('Signup successful! Please verify your email.'));
+      }
     } catch (e) {
       if (e is FirebaseAuthException) {
         emit(AuthError(_getErrorMessage(e)));
       } else {
-        emit(AuthError('An unknown error occurred.'));
+        emit(AuthError('An unexpected error occurred.'));
       }
     }
   }
@@ -110,20 +188,16 @@ class AuthCubit extends Cubit<AuthState> {
   // Send Email Verification
   Future<void> sendEmailVerification() async {
     try {
+      emit(AuthLoading());
       final user = _auth.currentUser;
       if (user != null && !user.emailVerified) {
-        emit(AuthLoading());
         await user.sendEmailVerification();
-        emit(EmailVerificationSent());
+        emit(AuthSuccess('Verification email sent successfully.'));
       } else {
-        emit(AuthError('Email is already verified or user is null.'));
+        emit(AuthError('Email is already verified.'));
       }
     } catch (e) {
-      if (e is FirebaseAuthException) {
-        emit(AuthError(_getErrorMessage(e)));
-      } else {
-        emit(AuthError('An unexpected error occurred.'));
-      }
+      emit(AuthError('Failed to send verification email.'));
     }
   }
 
@@ -131,21 +205,15 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> checkEmailVerification() async {
     try {
       emit(AuthLoading());
-      await _auth.currentUser?.reload(); // Refresh user instance
+      await _auth.currentUser?.reload();
       final user = _auth.currentUser;
       if (user != null && user.emailVerified) {
-        // Ensure token is non-null
-        final token = await user.getIdToken() ?? '';
-        emit(AuthAuthenticated(user, token));
+        emit(AuthSuccess('Email verified successfully.'));
       } else {
-        emit(AuthError('Email not yet verified.'));
+        emit(AuthError('Email is not yet verified.'));
       }
     } catch (e) {
-      if (e is FirebaseAuthException) {
-        emit(AuthError(_getErrorMessage(e)));
-      } else {
-        emit(AuthError('An unexpected error occurred.'));
-      }
+      emit(AuthError('Failed to check email verification status.'));
     }
   }
 
@@ -222,6 +290,44 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  void calculateSessionDuration() {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final lastSignInTime = user.metadata.lastSignInTime;
+      if (lastSignInTime != null) {
+        final duration = DateTime.now().difference(lastSignInTime);
+        print('Session duration: ${duration.inMinutes} minutes');
+      }
+    }
+  }
+
+  Future<void> checkSessionExpiry() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final lastSignInTime = user.metadata.lastSignInTime;
+      if (lastSignInTime != null) {
+        final duration = DateTime.now().difference(lastSignInTime);
+        if (duration.inDays > 30) {
+          emit(AuthError('Session expired. Please re-authenticate.'));
+          await logout(); // Log the user out
+        }
+      }
+    }
+  }
+
+  Future<void> fetchUserMetadata(String uid) async {
+    final userDoc = await firestoreServices.getDocument(
+      path: ApiPath.user(uid),
+      builder: (data, documentId) => data,
+    );
+
+    final creationTime = DateTime.parse(userDoc['creationTime']);
+    final lastSignInTime = DateTime.parse(userDoc['lastSignInTime']);
+
+    print('Account created on: ${creationTime.toLocal()}');
+    print('Last signed in on: ${lastSignInTime.toLocal()}');
+  }
+
   // Cleanup subscription
   @override
   Future<void> close() {
@@ -231,16 +337,20 @@ class AuthCubit extends Cubit<AuthState> {
 
   String _getErrorMessage(FirebaseAuthException e) {
     switch (e.code) {
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'user-disabled':
+        return 'This account has been disabled. Please contact support.';
       case 'user-not-found':
-        return 'No user found for this email.';
+        return 'No account found for this email. Please sign up.';
       case 'wrong-password':
-        return 'Incorrect password.';
+        return 'The password is incorrect. Please try again.';
       case 'email-already-in-use':
-        return 'This email is already registered.';
+        return 'This email is already registered. Please log in or use a different email.';
+      case 'weak-password':
+        return 'The password is too weak. Please choose a stronger password.';
       case 'too-many-requests':
-        return 'Too many requests. Please try again later.';
-      case 'email-not-verified':
-        return 'Email not yet verified. Please check your inbox.';
+        return 'Too many attempts. Please try again later.';
       default:
         return 'An unexpected error occurred. Please try again.';
     }
