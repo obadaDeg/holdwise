@@ -35,8 +35,9 @@ class AppTheme {
       // --- Input Decoration ---
       inputDecorationTheme: _inputDecorationTheme(
         context,
-        fillColor: AppColors.light,
+        fillColor: AppColors.gray200,
         filled: true,
+        prefixIconColor: AppColors.primary500,
         enabledBorderColor: AppColors.primary500,
         focusedBorderColor: AppColors.primary500,
         errorBorderColor: AppColors.error,
@@ -59,7 +60,7 @@ class AppTheme {
         actionColor: AppColors.secondary500,
       ),
       cardTheme: _cardTheme(
-        backgroundColor: AppColors.light,
+        backgroundColor: AppColors.gray100,
         shadowColor: AppColors.black,
       ),
       dialogTheme: _dialogTheme(
@@ -105,20 +106,21 @@ class AppTheme {
       ),
       outlinedButtonTheme: _outlinedButtonTheme(
         context,
-        color: AppColors.primary500,
+        color: AppColors.primary700,
         fillColor: AppColors.gray200,
       ),
       inputDecorationTheme: _inputDecorationTheme(
         context,
         fillColor: AppColors.gray200,
         filled: true,
-        enabledBorderColor: AppColors.primary500,
-        focusedBorderColor: AppColors.primary500,
+        prefixIconColor: AppColors.primary700,
+        enabledBorderColor: AppColors.primary700,
+        focusedBorderColor: AppColors.primary700,
         errorBorderColor: AppColors.error,
         disabledBorderColor: AppColors.gray500,
         hintColor: AppColors.gray500,
         labelStyle: AppTypography.body1(context).copyWith(
-          color: AppColors.primary500,
+          color: AppColors.primary700,
         ),
         hintStyle: AppTypography.body2(context).copyWith(
           color: AppColors.gray500,
@@ -133,7 +135,7 @@ class AppTheme {
         actionColor: AppColors.secondary700,
       ),
       cardTheme: _cardTheme(
-        backgroundColor: AppColors.gray800,
+        backgroundColor: AppColors.gray700,
         shadowColor: AppColors.gray500,
       ),
       dialogTheme: _dialogTheme(

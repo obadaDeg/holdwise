@@ -1,8 +1,9 @@
 class AppRoutes {
   static const String home = '/';
-  static const String auth = '/login';
-  static const String forgotPassword = '/forgot-password';
+  static const String login = '/login';
   static const String signup = '/signup';
+  static const String forgotPassword = '/forgot-password';
+  static const String resetPassword = '/reset-password';
   static const String reports = '/reports';
   static const String reportDetails = '/report-details';
   static const String createReport = '/create-report';

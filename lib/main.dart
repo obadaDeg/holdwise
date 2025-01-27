@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/themes.dart';
 import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
@@ -7,6 +8,7 @@ import 'app/config/firebase_options.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
+  // debugPaintSizeEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
