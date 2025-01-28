@@ -7,6 +7,7 @@ import 'package:holdwise/features/auth/presentation/widgets/forgot_password_emai
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
 import 'package:holdwise/features/auth/presentation/widgets/otp_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
+import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -44,17 +45,13 @@ class AppRouter {
             ),
           ),
         );
-      case AppRoutes.home:
+      case AppRoutes.dashboard:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
             isAdmin: true,
             isPatient: true,
             isSpecialist: true,
-            child: const Scaffold(
-              body: Center(
-                child: Text('Home Page'),
-              ),
-            ),
+            child: Dashboard()
           ),
         );
 

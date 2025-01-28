@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holdwise/app/utils/api_path.dart';
 import 'package:http/http.dart' as http;
@@ -17,9 +18,41 @@ class AuthCubit extends Cubit<AuthState> {
   final firestoreServices = FirestoreServices.instance;
   StreamSubscription<User?>? _authSubscription;
   Timer? _tokenValidationTimer;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage(
+    aOptions: _getAndroidOptions(),
+  );
+  static AndroidOptions _getAndroidOptions() => const AndroidOptions(
+        encryptedSharedPreferences: true,
+      );
 
   AuthCubit() : super(AuthInitial()) {
     _authSubscription = _auth.authStateChanges().listen(_authStateListener);
+  }
+
+  Future<void> _saveToken(String token) async {
+    await _secureStorage.write(key: 'auth_token', value: token);
+    await _secureStorage.write(
+        key: 'auth_token_timestamp', value: DateTime.now().toIso8601String());
+    await _secureStorage.write(
+        key: 'auth_token_expiry',
+        value: DateTime.now().add(Duration(days: 30)).toIso8601String());
+    await _secureStorage.write(key: 'user', value: _auth.currentUser!.uid);
+  }
+
+  Future<String?> _loadToken() async {
+    return await _secureStorage.read(key: 'auth_token');
+  }
+
+  Future<String?> _loadUser() async {
+    return await _secureStorage.read(key: 'user');
+  }
+
+  Future<void> _removeAll() async {
+    await _secureStorage.deleteAll();
+  }
+
+  Future<void> _removeToken() async {
+    await _secureStorage.delete(key: 'auth_token');
   }
 
   void _authStateListener(User? user) {
@@ -34,34 +67,18 @@ class AuthCubit extends Cubit<AuthState> {
   void _validateToken(User user) async {
     try {
       final idTokenResult = await user.getIdTokenResult();
-      final tokenValidAfter =
-          DateTime.parse(idTokenResult.claims!['tokensValidAfterTime']);
 
-      // check disabled user
-      if (user.emailVerified == false) {
-        emit(AuthError('Email is not verified. Please verify your email.'));
-        return;
-      }
+      // Save the token
+      await _saveToken(idTokenResult.token!);
 
-      // if (await user.disabled == null) {
-      //   emit(AuthError('Token is invalid. Please log in again.'));
-      //   return;
-      // }
-
-      // Check if the token is expired
-      if (DateTime.now().isAfter(tokenValidAfter)) {
-        await logout(); // Automatically log the user out
-        emit(AuthError('Session expired. Please log in again.'));
-      } else {
-        final role = idTokenResult.claims?['role'] ?? 'patient';
-        if (role == 'admin') {
-          emit(AuthAuthenticated(user, idTokenResult.token!, isAdmin: true));
-        } else if (role == 'specialist') {
-          emit(AuthAuthenticated(user, idTokenResult.token!,
-              isSpecialist: true));
-        } else if (role == 'patient') {
-          emit(AuthAuthenticated(user, idTokenResult.token!, isPatient: true));
-        }
+      // Emit authenticated state based on the role
+      final role = idTokenResult.claims?['role'] ?? 'patient';
+      if (role == 'admin') {
+        emit(AuthAuthenticated(user, idTokenResult.token!, isAdmin: true));
+      } else if (role == 'specialist') {
+        emit(AuthAuthenticated(user, idTokenResult.token!, isSpecialist: true));
+      } else if (role == 'patient') {
+        emit(AuthAuthenticated(user, idTokenResult.token!, isPatient: true));
       }
     } catch (e) {
       debugPrint('Token validation failed: ${e.toString()}');
@@ -83,10 +100,16 @@ class AuthCubit extends Cubit<AuthState> {
     _tokenValidationTimer?.cancel();
   }
 
-  void checkAuthStatus() {
-    final User? user = _auth.currentUser;
-    if (user != null) {
-      _validateToken(user);
+  void checkAuthStatus() async {
+    final String? token = await _loadToken();
+    if (token != null) {
+      final user = _auth.currentUser;
+      if (user != null) {
+        // Validate token
+        _validateToken(user);
+      } else {
+        emit(AuthLoggedOut());
+      }
     } else {
       emit(AuthLoggedOut());
     }
@@ -171,6 +194,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(AuthLoggingOut());
     await _auth.signOut();
+    await _removeToken(); // Clear token from storage
     emit(AuthLoggedOut());
   }
 
@@ -273,23 +297,23 @@ class AuthCubit extends Cubit<AuthState> {
         print(
             '#################################################################');
 
-      //   final response = await http.post(
-      //     Uri.parse('http://172.24.16.1:5000/setCustomClaims'),
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: jsonEncode({'uid': user.uid}),
-      //   );
+        //   final response = await http.post(
+        //     Uri.parse('http://172.24.16.1:5000/setCustomClaims'),
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: jsonEncode({'uid': user.uid}),
+        //   );
 
-      //   print('==================================');
-      //   if (response.statusCode == 200) {
-      //     emit(AuthSuccess('Signup with Google successful!'));
-      //     print('Custom claims set successfully.');
-      //     _validateToken(user);
-      //   } else {
-      //     print('Error: ${response.body}');
-      //     emit(AuthError('Google Signup failed, please try again.'));
-      //   }
+        //   print('==================================');
+        //   if (response.statusCode == 200) {
+        //     emit(AuthSuccess('Signup with Google successful!'));
+        //     print('Custom claims set successfully.');
+        //     _validateToken(user);
+        //   } else {
+        //     print('Error: ${response.body}');
+        //     emit(AuthError('Google Signup failed, please try again.'));
+        //   }
       }
     } catch (e) {
       print('Error: $e here is the error');

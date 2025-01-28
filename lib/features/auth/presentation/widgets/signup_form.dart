@@ -34,7 +34,7 @@ class _SignupFormState extends State<SignupForm> {
           print('Loading...');
         } else if (state is AuthSuccess) {
           // Navigate to home page on success
-          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
         } else if (state is AuthError) {
           // Show an error message
           ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +53,7 @@ class _SignupFormState extends State<SignupForm> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
         } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),

@@ -1,5 +1,5 @@
 class AppRoutes {
-  static const String home = '/';
+  static const String dashboard = '/';
   static const String login = '/login';
   static const String signup = '/signup';
   static const String forgotPassword = '/forgot-password';

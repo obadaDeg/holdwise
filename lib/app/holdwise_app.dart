@@ -34,7 +34,7 @@ class HoldWiseApp extends StatelessWidget {
                 darkTheme: AppTheme.darkTheme(context),
                 themeMode: themeMode,
                 initialRoute: state is AuthAuthenticated
-                    ? AppRoutes.home
+                    ? AppRoutes.dashboard
                     : AppRoutes.login,
                 onGenerateRoute: AppRouter.onGenerateRoute,
               );

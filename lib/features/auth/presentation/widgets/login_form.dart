@@ -42,10 +42,10 @@ class _LoginFormState extends State<LoginForm> {
         } else if (state is AuthAuthenticated) {
           print(state.user);
           ScaffoldMessenger.of(context).showSnackBar(
-            
+
             const SnackBar(content: Text('Login successful!')),
           );
-          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
         }
       },
       child: Padding(
