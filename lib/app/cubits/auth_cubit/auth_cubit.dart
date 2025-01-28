@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +64,8 @@ class AuthCubit extends Cubit<AuthState> {
         }
       }
     } catch (e) {
-      emit(AuthError('Token validation failed: ${e.toString()}'));
+      debugPrint('Token validation failed: ${e.toString()}');
+      emit(AuthError('Something went wrong. Please log in again.'));
     }
   }
 
@@ -237,13 +240,12 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // Google Signup
-
   Future<void> googleSignup() async {
     emit(AuthLoading());
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       debugPrint('Google Sign-in initiated...');
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn(); // the problem with this line
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       debugPrint('Google Sign-in completed...');
       if (googleUser == null) {
         emit(AuthError('Google Sign-in cancelled.'));
@@ -262,22 +264,35 @@ class AuthCubit extends Cubit<AuthState> {
       final User? user = userCredential.user;
 
       if (user != null) {
-        // Call your backend to set custom claims
-        final response = await http.post(
-          // since it require a backend server to set custom claims
-          Uri.parse('http://localhost:3000/setCustomClaims'),
-          body: {'uid': user.uid},
-        );
+        final token = await user.getIdToken();
+        emit(AuthAuthenticated(user, token!, isPatient: true));
+        print(
+            '#################################################################');
+        print(user);
+        print(user.uid);
+        print(
+            '#################################################################');
 
-        if (response.statusCode == 200) {
-          emit(AuthSuccess('Signup with Google successful!'));
-          _validateToken(user);
-        } else {
-          emit(AuthError('Failed to set custom claims.'));
-        }
+      //   final response = await http.post(
+      //     Uri.parse('http://172.24.16.1:5000/setCustomClaims'),
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: jsonEncode({'uid': user.uid}),
+      //   );
+
+      //   print('==================================');
+      //   if (response.statusCode == 200) {
+      //     emit(AuthSuccess('Signup with Google successful!'));
+      //     print('Custom claims set successfully.');
+      //     _validateToken(user);
+      //   } else {
+      //     print('Error: ${response.body}');
+      //     emit(AuthError('Google Signup failed, please try again.'));
+      //   }
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error: $e here is the error');
       emit(AuthError('Google Signup failed, please try again.'));
     }
   }

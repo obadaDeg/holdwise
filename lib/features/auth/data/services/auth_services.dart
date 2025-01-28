@@ -1,7 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:holdwise/app/utils/api_path.dart';
-import 'package:holdwise/common/models/user_model.dart';
+import 'package:holdwise/features/auth/data/models/user_model.dart';
 import 'package:holdwise/common/services/firestore_services.dart';
 
 class AuthServices {

@@ -31,7 +31,6 @@ class _SignupFormState extends State<SignupForm> {
       // Listen for auth state changes
       context.read<AuthCubit>().stream.listen((state) {
         if (state is AuthLoading) {
-          // Show a loading indicator
           print('Loading...');
         } else if (state is AuthSuccess) {
           // Navigate to home page on success
@@ -147,7 +146,6 @@ class _SignupFormState extends State<SignupForm> {
               SizedBox(height: screenHeight * 0.02),
               ElevatedButton(
                 onPressed: () {
-                  debugPrint('Sign up with Google');
                   context.read<AuthCubit>().googleSignup();
                 },
                 child: const Text('Sign Up with Google'),

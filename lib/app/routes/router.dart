@@ -47,6 +47,9 @@ class AppRouter {
       case AppRoutes.home:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
             child: const Scaffold(
               body: Center(
                 child: Text('Home Page'),

@@ -2,6 +2,7 @@ const express = require("express");
 const admin = require("firebase-admin");
 const path = require("path");
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 // Initialize your Firebase Admin SDK
 const serviceAccount = require(path.join(__dirname, "serviceAccountKey.json"));
@@ -13,7 +14,14 @@ admin.initializeApp({
 const app = express();
 
 // Middleware to parse JSON bodies
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(cors())
+
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+  console.log('Hello, World!');
+  
+});
 
 // Route to set custom claims
 app.post("/setCustomClaims", async (req, res) => {
@@ -33,7 +41,7 @@ app.post("/setCustomClaims", async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend server is running on http://localhost:${PORT}`);
 });
