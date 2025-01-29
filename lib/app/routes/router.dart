@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:holdwise/app/routes/protected_routes.dart';
 import 'package:holdwise/app/routes/routes.dart';
+import 'package:holdwise/common/widgets/role_based_buttom_navbar.dart';
 import 'package:holdwise/features/auth/presentation/pages/auth_page.dart';
 import 'package:holdwise/features/auth/presentation/widgets/forgot_password_email_input_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
@@ -51,7 +52,9 @@ class AppRouter {
             isAdmin: true,
             isPatient: true,
             isSpecialist: true,
-            child: Dashboard()
+            child: RoleBasedNavBar(
+              role: 'specialist',
+            )
           ),
         );
 
