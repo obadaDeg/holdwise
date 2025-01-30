@@ -129,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
               // Google Sign-In button
               ElevatedButton.icon(
                 onPressed: () {
-                  print('Sign in with Google');
+                  context.read<AuthCubit>().googleSignup();
                 },
                 icon: const Icon(Icons.g_mobiledata),
                 label: const Text('Sign in with Google'),

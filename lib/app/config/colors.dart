@@ -57,6 +57,7 @@ class AppColors {
   static const Color warning = Color(0xFFFFC107);
   static const Color error = Color(0xFFF44336);
   static const Color info = Color(0xFFD9E1E1);
+  static const Color danger = Color(0xFFD32F2F);
 
 
   // Opacity Utility (Dynamically)

@@ -1,10 +1,50 @@
 // role_based_nav_items.dart
 import 'package:flutter/material.dart';
+import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedNavItems {
+  static List<Map<String, dynamic>> _getSharedDrawerItems() {
+    return [
+      {
+        'icon': Icons.palette,
+        'label': 'Theme',
+        'onTap': () {
+          // Navigate to dashboard
+        },
+      },
+      {
+        'icon': Icons.person,
+        'label': 'Profile',
+        'onTap': () {
+          // Navigate to profile
+        },
+      },
+      {
+        'icon': Icons.settings,
+        'label': 'Settings',
+        'onTap': () {
+          // Navigate to settings
+        },
+      },
+      {
+        'icon': Icons.help,
+        'label': 'Help',
+        'onTap': () {
+          // Navigate to help
+        },
+      },
+      {
+        'icon': Icons.info,
+        'label': 'About',
+        'onTap': () {
+          // Navigate to about
+        },
+      }
+    ];
+  }
   static List<Map<String, dynamic>> getDrawerItems(String role) {
     switch (role) {
-      case 'admin':
+      case AppRoles.admin:
         return [
           {
             'icon': Icons.settings,
@@ -27,8 +67,9 @@ class RoleBasedNavItems {
               // Navigate to settings
             },
           },
+          ..._getSharedDrawerItems(),
         ];
-      case 'patient':
+      case AppRoles.patient:
         return [
           {
             'icon': Icons.person,
@@ -51,8 +92,9 @@ class RoleBasedNavItems {
               // Navigate to medical records
             },
           },
+          ..._getSharedDrawerItems(),
         ];
-      case 'specialist':
+      case AppRoles.specialist:
         return [
           {
             'icon': Icons.schedule,
@@ -75,6 +117,7 @@ class RoleBasedNavItems {
               // Navigate to messages
             },
           },
+          ..._getSharedDrawerItems(),
         ];
       default:
         return [
@@ -91,7 +134,7 @@ class RoleBasedNavItems {
 
   static List<Map<String, dynamic>> getBottomNavItems(String role) {
     switch (role) {
-      case 'admin':
+      case AppRoles.admin:
         return [
           {
             'icon': Icons.dashboard,
@@ -131,7 +174,7 @@ class RoleBasedNavItems {
             ),
           },
         ];
-      case 'patient':
+      case AppRoles.patient:
         return [
           {
             'icon': Icons.person,
@@ -170,7 +213,7 @@ class RoleBasedNavItems {
             ),
           },
         ];
-      case 'specialist':
+      case AppRoles.specialist:
         return [
           {
             'icon': Icons.schedule,

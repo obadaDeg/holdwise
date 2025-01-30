@@ -9,16 +9,12 @@ class AuthLoading extends AuthState {}
 class AuthAuthenticated extends AuthState {
   final User user;
   final String token;
-  final bool isAdmin;
-  final bool isSpecialist;
-  final bool isPatient;
+  final String role;
 
   AuthAuthenticated(
     this.user,
     this.token, {
-    this.isAdmin = false,
-    this.isSpecialist = false,
-    this.isPatient = false,
+    this.role = 'patient',
   });
 }
 

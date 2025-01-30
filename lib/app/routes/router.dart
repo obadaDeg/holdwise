@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/routes/protected_routes.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/widgets/role_based_buttom_navbar.dart';
@@ -8,44 +9,59 @@ import 'package:holdwise/features/auth/presentation/widgets/forgot_password_emai
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
 import 'package:holdwise/features/auth/presentation/widgets/otp_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
-import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.login:
         return CupertinoPageRoute(
-          builder: (_) => AuthPage(
-            title: 'Login',
-            cardContent: LoginForm(),
-          ),
-        );
-      case AppRoutes.signup:
-        return CupertinoPageRoute(
-          builder: (_) => const AuthPage(
-            title: 'Sign Up',
-            cardContent: SignupForm(),
-          ),
-        );
-      case AppRoutes.forgotPassword:
-        return CupertinoPageRoute(
-          builder: (_) => AuthPage(
-            title: 'Forgot Password',
-            cardContent: ForgotPasswordEmailInputCard(),
-          ),
-        );
-      case AppRoutes.resetPassword:
-        return CupertinoPageRoute(
-          builder: (_) => AuthPage(
-            title: 'Reset Password',
-            cardContent: OTPCard(
-              title: 'Reset Password',
-              description: "Please enter the code sent to your email.",
-              onResend: () => print('Resend code'),
-              onSubmit: (String s) => print('Submit code'),
+          builder: (_) => ProtectedRoute(
+            isAuthPage: true, 
+            child: AuthPage(
+              title: 'Login',
+              cardContent: LoginForm(),
             ),
           ),
         );
+
+      case AppRoutes.signup:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAuthPage: true, 
+            child: AuthPage(
+              title: 'Sign Up',
+              cardContent: SignupForm(),
+            ),
+          ),
+        );
+
+      case AppRoutes.forgotPassword:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAuthPage: true, 
+            child: AuthPage(
+              title: 'Forgot Password',
+              cardContent: ForgotPasswordEmailInputCard(),
+            ),
+          ),
+        );
+
+      case AppRoutes.resetPassword:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAuthPage: true, 
+            child: AuthPage(
+              title: 'Reset Password',
+              cardContent: OTPCard(
+                title: 'Reset Password',
+                description: "Please enter the code sent to your email.",
+                onResend: () => print('Resend code'),
+                onSubmit: (String s) => print('Submit code'),
+              ),
+            ),
+          ),
+        );
+
       case AppRoutes.dashboard:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
@@ -53,8 +69,8 @@ class AppRouter {
             isPatient: true,
             isSpecialist: true,
             child: RoleBasedNavBar(
-              role: 'specialist',
-            )
+              role: AppRoles.patient,
+            ),
           ),
         );
 

@@ -6,6 +6,12 @@ class AppInfo {
   static const String appVersion = '1.0.0';
 }
 
+class AppRoles {
+  static const String admin = 'Admin';
+  static const String patient = 'patient';
+  static const String specialist = 'Specialist';
+}
+
 // Class for asset file paths
 class Assets {
   static const String appIconPath = 'assets/icons/app_icon.png';

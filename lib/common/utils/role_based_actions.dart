@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedActions {
   static Map<String, List<Widget>> getAppBarActions(String role) {
     switch (role) {
-      case 'admin':
+      case AppRoles.admin:
         return {
           'actions': [
             IconButton(
@@ -26,7 +27,7 @@ class RoleBasedActions {
             ),
           ],
         };
-      case 'patient':
+      case AppRoles.patient:
         return {
           'actions': [
             IconButton(
@@ -49,7 +50,7 @@ class RoleBasedActions {
             ),
           ],
         };
-      case 'specialist':
+      case AppRoles.specialist:
         return {
           'actions': [
             IconButton(

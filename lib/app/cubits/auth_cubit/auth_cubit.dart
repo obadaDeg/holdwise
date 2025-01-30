@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/utils/api_path.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -72,14 +73,8 @@ class AuthCubit extends Cubit<AuthState> {
       await _saveToken(idTokenResult.token!);
 
       // Emit authenticated state based on the role
-      final role = idTokenResult.claims?['role'] ?? 'patient';
-      if (role == 'admin') {
-        emit(AuthAuthenticated(user, idTokenResult.token!, isAdmin: true));
-      } else if (role == 'specialist') {
-        emit(AuthAuthenticated(user, idTokenResult.token!, isSpecialist: true));
-      } else if (role == 'patient') {
-        emit(AuthAuthenticated(user, idTokenResult.token!, isPatient: true));
-      }
+      final role = idTokenResult.claims?['role'] ?? AppRoles.patient;
+      emit(AuthAuthenticated(user, idTokenResult.token!, role: role));
     } catch (e) {
       debugPrint('Token validation failed: ${e.toString()}');
       emit(AuthError('Something went wrong. Please log in again.'));
@@ -286,10 +281,11 @@ class AuthCubit extends Cubit<AuthState> {
       UserCredential userCredential =
           await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
-
+      print('User is $user');
       if (user != null) {
         final token = await user.getIdToken();
-        emit(AuthAuthenticated(user, token!, isPatient: true));
+        print('Token is $token');
+        emit(AuthAuthenticated(user, token!, role: AppRoles.patient));
         print(
             '#################################################################');
         print(user);

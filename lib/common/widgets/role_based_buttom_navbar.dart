@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:holdwise/common/widgets/role_based_side_navbar.dart';
 import 'package:holdwise/features/appointments/presentation/pages/appointments_screen.dart';
+import 'package:holdwise/features/camera_screen/presentation/pages/camera_screen.dart';
 import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:holdwise/features/help_screen/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/manage_specialist/presentation/pages/manage_specialists.dart';
@@ -9,106 +11,161 @@ import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart
 import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
 import 'package:holdwise/features/settings_screen/presentation/pages/settings_screen.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedNavBar extends StatelessWidget {
-  final String role; // Role: admin, patient, specialist
+  final String role;
 
   const RoleBasedNavBar({Key? key, required this.role}) : super(key: key);
 
+  ItemConfig _buildNavItem({
+    required IconData icon,
+    required String title,
+  }) {
+    return ItemConfig(
+      icon: Icon(icon),
+      title: title,
+      activeColorSecondary: AppColors.secondary700,
+      activeForegroundColor: AppColors.secondary700,
+      inactiveForegroundColor: AppColors.gray100,
+    );
+  }
+
   List<PersistentTabConfig> _getTabs(String role) {
-    switch (role) {
-      case 'admin':
-        return [
+    return switch (role) {
+      AppRoles.admin => [
           PersistentTabConfig(
             screen: DashboardScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.dashboard),
+            item: _buildNavItem(
+              icon: Icons.dashboard,
               title: "Dashboard",
             ),
           ),
           PersistentTabConfig(
             screen: ManageSpecialistsScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.manage_accounts),
+            item: _buildNavItem(
+              icon: Icons.manage_accounts,
               title: "Users",
             ),
           ),
           PersistentTabConfig(
             screen: SettingsScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.settings),
+            item: _buildNavItem(
+              icon: Icons.settings,
               title: "Settings",
             ),
           ),
-        ];
-      case 'patient':
-        return [
+        ],
+      AppRoles.patient => [
           PersistentTabConfig(
-            screen: ProfileScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.person),
-              title: "Profile",
-            ),
-          ),
-          PersistentTabConfig(
-            screen: AppointmentsScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.calendar_today),
-              title: "Appointments",
+            screen: DashboardScreen(),
+            item: _buildNavItem(
+              icon: Icons.home,
+              title: "Dashboard",
             ),
           ),
           PersistentTabConfig(
             screen: MedicalRecordsScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.medical_services),
+            item: _buildNavItem(
+              icon: Icons.medical_services,
               title: "Records",
             ),
           ),
-        ];
-      case 'specialist':
-        return [
+          PersistentTabConfig(
+            screen: CameraScreen(),
+            item: _buildNavItem(
+              icon: Icons.camera,
+              title: "Camera",
+            ),
+          ),
+          PersistentTabConfig(
+            screen: CameraScreen(),
+            item: _buildNavItem(
+              icon: Icons.explore,
+              title: "Explore",
+            ),
+          ),
+          PersistentTabConfig(
+            screen: ProfileScreen(),
+            item: _buildNavItem(
+              icon: Icons.person,
+              title: "Profile",
+            ),
+          ),
+        ],
+      AppRoles.specialist => [
           PersistentTabConfig(
             screen: ScheduleScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.schedule),
+            item: _buildNavItem(
+              icon: Icons.schedule,
               title: "Schedule",
             ),
           ),
           PersistentTabConfig(
             screen: ProfileScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.person),
+            item: _buildNavItem(
+              icon: Icons.person,
               title: "Profile",
             ),
           ),
           PersistentTabConfig(
             screen: MessagesScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.message),
+            item: _buildNavItem(
+              icon: Icons.message,
               title: "Messages",
             ),
           ),
-        ];
-      default:
-        return [
+        ],
+      _ => [
           PersistentTabConfig(
             screen: HelpScreen(),
-            item: ItemConfig(
-              icon: Icon(Icons.help),
+            item: _buildNavItem(
+              icon: Icons.help,
               title: "Help",
             ),
           ),
-        ];
-    }
+        ]
+    };
   }
 
   @override
   Widget build(BuildContext context) {
+    // Retrieve the current theme mode
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    // Apply app colors based on the theme
+    final Color backgroundColor =
+        isDarkMode ? AppColors.primary700 : AppColors.primary500;
+    final Gradient? backgroundGradient = Gradients.tertiaryGradient;
+
     return PersistentTabView(
+      drawer: RoleBasedDrawer(role: role),
       tabs: _getTabs(role),
       navBarBuilder: (navBarConfig) => Style13BottomNavBar(
         navBarConfig: navBarConfig,
+        navBarDecoration: NavBarDecoration(
+          color: backgroundColor, // Fallback color
+          gradient: backgroundGradient, // Apply gradient if needed
+          // add a border radius to the top left and top right corners of the navbar
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: .2),
+              blurRadius: 8,
+              spreadRadius: 2,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
       ),
+      backgroundColor:
+          Colors.transparent, // Allows gradient or custom color to show
+      navBarHeight: 70, // Adjust height if needed
+      popAllScreensOnTapOfSelectedTab: true, // Optional behavior
     );
   }
 }
