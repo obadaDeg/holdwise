@@ -10,10 +10,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: RoleBasedAppBar(
-        role: AppRoles.patient,
         title: 'Dashboard',
       ),
-      drawer: RoleBasedDrawer(role: AppRoles.patient),
       body: Center(
         child: Text('Dashboard'),
       ),

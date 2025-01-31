@@ -2,66 +2,61 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/colors.dart';
 import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
+import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/utils/role_based_nav_items.dart';
 import 'package:holdwise/common/widgets/general_dialog.dart';
 
 class RoleBasedDrawer extends StatelessWidget {
-  final String role; // User role (admin, patient, specialist)
+  final String role;
 
   const RoleBasedDrawer({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
     final navItems = RoleBasedNavItems.getDrawerItems(role);
+    final themeMode = context.watch<ThemeCubit>().state;
+    final isDarkMode = themeMode == ThemeMode.dark;
 
     return Drawer(
       child: Column(
         children: [
-          // Drawer Header
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            child: Center(
-              child: Text(
-                'Welcome, $role',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          // Dynamic Menu Items
+          _buildDrawerHeader(context),
           Expanded(
             child: ListView.builder(
               itemCount: navItems.length,
               itemBuilder: (context, index) {
                 final item = navItems[index];
-
                 return ListTile(
-                  leading: Icon(item['icon']),
+                  leading: Icon(item['icon'], color: isDarkMode ? AppColors.tertiary100 : AppColors.tertiary500),
                   title: Text(item['label']),
-                  onTap: () {
-                    if (item['label'] == 'Logout') {
-                      _confirmLogout(context);
-                    } else {
-                      item['onTap']?.call();
-                    }
-                  },
+                  onTap: item['onTap'],
                 );
               },
             ),
           ),
-          const Divider(
-            color: AppColors.gray200,
+          Divider(
+            color: isDarkMode ? AppColors.gray700 : AppColors.gray200,
             height: 1,
-          ), // Visual separation before logout
+          ),
           ListTile(
-            leading: const Icon(Icons.logout, color: AppColors.danger),
+            
+            leading: Icon(
+              isDarkMode ? Icons.light_mode : Icons.dark_mode,
+              color: isDarkMode ? AppColors.tertiary100 : AppColors.tertiary500,
+            ),
+            title: Text(
+              isDarkMode ? "Light Mode" : "Dark Mode",
+              style: TextStyle(
+                color: !isDarkMode ? AppColors.gray700 : AppColors.gray200,
+              ),
+            ),
+            onTap: () => context.read<ThemeCubit>().toggleTheme(),
+          ),
+          ListTile(
+            leading: Icon(Icons.logout, color: isDarkMode ? AppColors.error : AppColors.danger),
             title:
-                const Text('Logout', style: TextStyle(color: AppColors.danger)),
+                Text('Logout', style: TextStyle(color: isDarkMode ? AppColors.error : AppColors.danger)),
             onTap: () => _confirmLogout(context),
           ),
         ],
@@ -69,18 +64,106 @@ class RoleBasedDrawer extends StatelessWidget {
     );
   }
 
-  /// Logout Confirmation Dialog
+  Widget _buildDrawerHeader(BuildContext context) {
+    final authState = context.watch<AuthCubit>().state;
+    String? imageURL;
+    if (authState is AuthAuthenticated) {
+      imageURL = authState.user.photoURL;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
+      decoration: BoxDecoration(
+        gradient: Gradients.tertiaryGradient,
+        borderRadius: const BorderRadius.only(
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Row to align avatar, name, and notification icon
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Profile Avatar & Name
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoutes.profile);
+                },
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundColor: AppColors.tertiary100,
+                      backgroundImage:
+                          imageURL != null ? NetworkImage(imageURL) : null,
+                      child: imageURL == null
+                          ? Icon(Icons.person,
+                              size: 25, color: AppColors.tertiary500)
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      authState is AuthAuthenticated
+                          ? authState.user.displayName!
+                          : 'Guest',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications, color: Colors.white),
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.notifications);
+                    },
+                  ),
+                  Positioned(
+                    right: 6,
+                    top: 6,
+                    child: Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: const BoxDecoration(
+                        color: AppColors.secondary500,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Text(
+                        '1', // You can replace this with a dynamic count
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   void _confirmLogout(BuildContext context) {
     showDialog(
       context: context,
       builder: (ctx) => GeneralDialog(
         title: 'Confirm Logout',
         message: 'Are you sure you want to log out?',
-        icon: Icons.warning_amber_rounded, // Floating icon
-        onCancel: () => Navigator.pop(ctx), // Cancel
+        icon: Icons.warning_amber_rounded,
+        onCancel: () => Navigator.pop(ctx),
         onConfirm: () {
-          Navigator.pop(ctx); // Close dialog
-          context.read<AuthCubit>().logout(); // Trigger logout
+          Navigator.pop(ctx);
+          context.read<AuthCubit>().logout();
         },
       ),
     );

@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/config/constants.dart';
+import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/common/utils/role_based_actions.dart';
 
 class RoleBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String role;
   final String title;
+  final bool displayActions;
+  final List<Widget>? selectedActions;
 
-  const RoleBasedAppBar({super.key, required this.role, required this.title});
+  const RoleBasedAppBar({
+    super.key,
+    required this.title,
+    this.selectedActions,
+    this.displayActions = true,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final role = context.read<AuthCubit>().state is AuthAuthenticated
+        ? (context.read<AuthCubit>().state as AuthAuthenticated).role
+        : AppRoles.patient; // Default role if not authenticated
+
     final actions = RoleBasedActions.getAppBarActions(role)['actions'] ?? [];
 
     return PreferredSize(
@@ -20,7 +33,7 @@ class RoleBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: AppBar(
           title: Text(title),
-        actions: actions,
+          actions: displayActions?  selectedActions ?? actions : null,
           backgroundColor: Colors.transparent,
           elevation: 0, // Optional: removes shadow for a cleaner gradient look
         ),

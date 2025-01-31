@@ -9,6 +9,7 @@ import 'package:holdwise/features/auth/presentation/widgets/forgot_password_emai
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
 import 'package:holdwise/features/auth/presentation/widgets/otp_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
+import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -16,7 +17,7 @@ class AppRouter {
       case AppRoutes.login:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAuthPage: true, 
+            isAuthPage: true,
             child: AuthPage(
               title: 'Login',
               cardContent: LoginForm(),
@@ -27,7 +28,7 @@ class AppRouter {
       case AppRoutes.signup:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAuthPage: true, 
+            isAuthPage: true,
             child: AuthPage(
               title: 'Sign Up',
               cardContent: SignupForm(),
@@ -38,7 +39,7 @@ class AppRouter {
       case AppRoutes.forgotPassword:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAuthPage: true, 
+            isAuthPage: true,
             child: AuthPage(
               title: 'Forgot Password',
               cardContent: ForgotPasswordEmailInputCard(),
@@ -49,7 +50,7 @@ class AppRouter {
       case AppRoutes.resetPassword:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAuthPage: true, 
+            isAuthPage: true,
             child: AuthPage(
               title: 'Reset Password',
               cardContent: OTPCard(
@@ -74,6 +75,34 @@ class AppRouter {
           ),
         );
 
+      case AppRoutes.profile:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: ProfileScreen()
+          ),
+        );
+
+      case AppRoutes.notifications:
+        return CupertinoPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('Notifications'),
+              ),
+              body: Center(
+                child: Text('Notifications Screen'),
+              ),
+            ),
+          ),
+        );
+      
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

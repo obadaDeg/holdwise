@@ -14,6 +14,7 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.white,
       appBarTheme: _appBarTheme(
         context,
+        gradient: Gradients.tertiaryGradient,
         backgroundColor: AppColors.primary500,
         foregroundColor: AppColors.white,
       ),
@@ -185,6 +186,7 @@ class AppTheme {
   /// Shared Themes and Configurations
   static AppBarTheme _appBarTheme(
     BuildContext context, {
+    Gradient? gradient,
     required Color backgroundColor,
     required Color foregroundColor,
   }) {

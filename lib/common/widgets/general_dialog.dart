@@ -19,17 +19,20 @@ class GeneralDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Get current theme
+    final dialogTheme = theme.dialogTheme; // Use app-wide dialog theme
+
     return Dialog(
-      backgroundColor: Colors.transparent, // Make background transparent
+      backgroundColor: Colors.transparent, // Transparent background for stack effect
       child: Stack(
-        clipBehavior: Clip.none, // Allow overflow
+        clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
           // Main Alert Dialog
           Container(
             padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: dialogTheme.backgroundColor ?? theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(15),
               boxShadow: [
                 BoxShadow(
@@ -44,15 +47,13 @@ class GeneralDialog extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).dialogTheme.titleTextStyle ??
-                      const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: dialogTheme.titleTextStyle ?? theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
                 Text(
                   message,
-                  style: Theme.of(context).dialogTheme.contentTextStyle ??
-                      const TextStyle(fontSize: 16),
+                  style: dialogTheme.contentTextStyle ?? theme.textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
@@ -62,15 +63,28 @@ class GeneralDialog extends StatelessWidget {
                     if (onCancel != null)
                       TextButton(
                         onPressed: onCancel,
-                        child: const Text('Cancel'),
+                        child: Text(
+                          'Cancel',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color,
+                          ),
+                        ),
                       ),
                     if (onConfirm != null)
                       ElevatedButton(
                         onPressed: onConfirm,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.danger, // Danger color
+                          backgroundColor: theme.colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                        child: const Text('Confirm', style: TextStyle(color: Colors.white)),
+                        child: Text(
+                          'Confirm',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
                   ],
                 ),
@@ -83,7 +97,7 @@ class GeneralDialog extends StatelessWidget {
             Positioned(
               top: -30, // Exceed the border
               child: CircleAvatar(
-                backgroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.surface,
                 radius: 35,
                 child: Icon(icon, color: AppColors.danger, size: 40),
               ),
