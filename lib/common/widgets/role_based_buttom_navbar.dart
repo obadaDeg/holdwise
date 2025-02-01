@@ -5,7 +5,7 @@ import 'package:holdwise/features/camera_screen/presentation/pages/camera_screen
 import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:holdwise/features/help_screen/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/manage_specialist/presentation/pages/manage_specialists.dart';
-import 'package:holdwise/features/medical_records/presentation/pages/medical_records.dart';
+import 'package:holdwise/features/records/presentation/pages/records.dart';
 import 'package:holdwise/features/messages_screen/presentation/pages/messages_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
@@ -66,7 +66,7 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: MedicalRecordsScreen(),
+            screen: RecordsScreen(),
             item: _buildNavItem(
               icon: Icons.medical_services,
               title: "Records",
