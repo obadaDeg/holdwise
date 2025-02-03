@@ -31,7 +31,7 @@ class PostureScoreCard extends StatelessWidget {
                     ? state.message
                     : "An error occurred.";
           }
-
+          print(new DateTime.now().toString() + " - Posture Score: $postureScore");
           return Card(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             color: cardColor,

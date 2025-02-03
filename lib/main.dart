@@ -1,21 +1,40 @@
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/rendering.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:holdwise/app/config/themes.dart';
-// import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:holdwise/app/holdwise_app.dart';
 import 'app/config/firebase_options.dart';
-import 'package:flutter/material.dart';
 
-void main() async {
-  // debugPaintSizeEnabled = true;
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const HoldWiseApp());
+  // Initialize Notification Channel for Chat Messages
+  await _initializeNotifications();
+
+  // Set the app to portrait mode only
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  ).then((_) {
+    runApp(const HoldWiseApp());
+  });
 }
+
+Future<void> _initializeNotifications() async {
+  var result = await FlutterNotificationChannel().registerNotificationChannel(
+    description: 'For Showing Chat Notifications',
+    id: 'chats',
+    importance: NotificationImportance.IMPORTANCE_HIGH,
+    name: 'Chat Notifications',
+  );
+  debugPrint('Notification Channel Result: $result');
+}
+
 
 // class MyApp extends StatelessWidget {
 //   const MyApp({Key? key}) : super(key: key);

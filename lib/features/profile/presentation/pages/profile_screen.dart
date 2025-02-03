@@ -4,6 +4,7 @@ import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/config/colors.dart';
 import 'package:holdwise/app/config/typography.dart';
 import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
+import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/widgets/role_based_appbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -25,7 +26,9 @@ class ProfileScreen extends StatelessWidget {
         selectedActions: [
           IconButton(
             icon: Icon(Icons.settings, color: AppColors.white),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.profileSettings);
+            },
           )
         ],
       ),

@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/common/widgets/role_based_side_navbar.dart';
 import 'package:holdwise/features/appointments/presentation/pages/appointments_screen.dart';
 import 'package:holdwise/features/camera_screen/presentation/pages/camera_screen.dart';
+import 'package:holdwise/features/chat/data/models/chat_user.dart';
+import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
 import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:holdwise/features/help_screen/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/manage_specialist/presentation/pages/manage_specialists.dart';
 import 'package:holdwise/features/records/presentation/pages/records.dart';
-import 'package:holdwise/features/messages_screen/presentation/pages/messages_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
 import 'package:holdwise/features/settings_screen/presentation/pages/settings_screen.dart';
@@ -16,7 +20,6 @@ import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedNavBar extends StatelessWidget {
   final String role;
-
   const RoleBasedNavBar({Key? key, required this.role}) : super(key: key);
 
   ItemConfig _buildNavItem({
@@ -26,13 +29,15 @@ class RoleBasedNavBar extends StatelessWidget {
     return ItemConfig(
       icon: Icon(icon),
       title: title,
-      activeColorSecondary: AppColors.secondary700,
-      activeForegroundColor: AppColors.secondary700,
+      activeColorSecondary: const Color.fromARGB(255, 187, 151, 240),
+      // activeColorSecondary: AppColors.secondary700,
+      activeForegroundColor: const Color.fromARGB(255, 187, 151, 240),
+      // activeForegroundColor: AppColors.secondary700,
       inactiveForegroundColor: AppColors.gray100,
     );
   }
 
-  List<PersistentTabConfig> _getTabs(String role) {
+  List<PersistentTabConfig> _getTabs(String role, User user) {
     return switch (role) {
       AppRoles.admin => [
           PersistentTabConfig(
@@ -73,14 +78,19 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: CameraScreen(),
+            screen: FullScreenCamera(),
             item: _buildNavItem(
               icon: Icons.camera,
               title: "Camera",
             ),
           ),
           PersistentTabConfig(
-            screen: CameraScreen(),
+            screen: Scaffold(
+              appBar: AppBar(
+                title: Text('Appointments'),
+              ),
+              body: AppointmentsScreen(),
+            ),
             item: _buildNavItem(
               icon: Icons.explore,
               title: "Explore",
@@ -110,7 +120,19 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: MessagesScreen(),
+            screen: FutureBuilder<ChatUser>(
+              future: ChatUser.fromFirebase(user),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error loading user"));
+                } else if (!snapshot.hasData) {
+                  return Center(child: Text("No user data"));
+                }
+                return ChatScreen(user: snapshot.data!);
+              },
+            ),
             item: _buildNavItem(
               icon: Icons.message,
               title: "Messages",
@@ -139,9 +161,13 @@ class RoleBasedNavBar extends StatelessWidget {
         isDarkMode ? AppColors.primary700 : AppColors.primary500;
     final Gradient? backgroundGradient = Gradients.tertiaryGradient;
 
+    final user = context.read<AuthCubit>().state is AuthAuthenticated
+        ? (context.read<AuthCubit>().state as AuthAuthenticated).user
+        : null;
+
     return PersistentTabView(
       drawer: RoleBasedDrawer(role: role),
-      tabs: _getTabs(role),
+      tabs: _getTabs(role, user!),
       navBarBuilder: (navBarConfig) => Style13BottomNavBar(
         navBarConfig: navBarConfig,
         navBarDecoration: NavBarDecoration(

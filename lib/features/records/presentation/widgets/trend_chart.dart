@@ -104,7 +104,7 @@ class _TrendChartState extends State<TrendChart> {
                         gradient: LinearGradient(
                           colors: [
                             Gradients.primaryGradient.colors.first
-                                .withValues(alpha: .3),
+                                .withValues(alpha: .25),
                             Gradients.primaryGradient.colors.last
                                 .withValues(alpha: 0.01),
                           ],

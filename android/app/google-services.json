@@ -58,6 +58,58 @@
       },
       "oauth_client": [
         {
+          "client_id": "599726188654-mk07sqctmcm01d0u9jvtn406u1ri85o9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holdwise",
+            "certificate_hash": "b93e25a8abf2bab2fd401ef0990a056d995af8f7"
+          }
+        },
+        {
+          "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1yAs2pYVnQKs7LSHuIWVaL3LfsXTQi3o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "599726188654-g401ajrdagdahqpjimj2ql74r57vconr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anima.holdwise"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599726188654:android:2fca1c4c0704ec94e31e7f",
+        "android_client_info": {
+          "package_name": "com.example.mainpage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599726188654-1n2tca8u2cjkqqvckerv1i76v665ofon.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mainpage",
+            "certificate_hash": "b93e25a8abf2bab2fd401ef0990a056d995af8f7"
+          }
+        },
+        {
           "client_id": "599726188654-rsee1ung1tojn4ahtmjjjlng9nga5h8u.apps.googleusercontent.com",
           "client_type": 3
         }

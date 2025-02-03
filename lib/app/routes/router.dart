@@ -9,7 +9,11 @@ import 'package:holdwise/features/auth/presentation/widgets/forgot_password_emai
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
 import 'package:holdwise/features/auth/presentation/widgets/otp_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
+import 'package:holdwise/features/chat/data/models/chat_user.dart';
+import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
+import 'package:holdwise/features/chat/presentation/pages/home_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
+import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -78,11 +82,10 @@ class AppRouter {
       case AppRoutes.profile:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAdmin: true,
-            isPatient: true,
-            isSpecialist: true,
-            child: ProfileScreen()
-          ),
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: ProfileScreen()),
         );
 
       case AppRoutes.notifications:
@@ -102,7 +105,76 @@ class AppRouter {
             ),
           ),
         );
-      
+
+      // case AppRoutes.chat:
+      //   final arg = settings.arguments;
+
+      //   if (arg is Future<ChatUser>) {
+      //     return CupertinoPageRoute(
+      //       builder: (_) => FutureBuilder<ChatUser>(
+      //         future: arg,
+      //         builder: (context, snapshot) {
+      //           if (snapshot.connectionState == ConnectionState.waiting) {
+      //             return Scaffold(
+      //                 body: Center(child: CircularProgressIndicator()));
+      //           } else if (snapshot.hasError || !snapshot.hasData) {
+      //             return Scaffold(
+      //               body: Center(
+      //                 child: Text('Error loading user data for Chat Screen'),
+      //               ),
+      //             );
+      //           }
+      //           return ProtectedRoute(
+      //             isAdmin: true,
+      //             isPatient: true,
+      //             isSpecialist: true,
+      //             child: ChatScreen(user: snapshot.data!),
+      //           );
+      //         },
+      //       ),
+      //     );
+      //   }
+
+      //   if (arg is ChatUser) {
+      //     return CupertinoPageRoute(
+      //       builder: (_) => ProtectedRoute(
+      //         isAdmin: true,
+      //         isPatient: true,
+      //         isSpecialist: true,
+      //         child: ChatScreen(user: arg),
+      //       ),
+      //     );
+      //   }
+
+      //   return CupertinoPageRoute(
+      //     builder: (_) => Scaffold(
+      //       body: Center(
+      //         child: Text('User data is missing for Chat Screen'),
+      //       ),
+      //     ),
+      //   );
+
+      case AppRoutes.chat:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: HomeScreen(),
+          ),
+        );
+
+      case AppRoutes.profileSettings:
+        return CupertinoPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: SettingsScreen(),
+          ),
+        );
+
       default:
         return CupertinoPageRoute(
           builder: (_) => Scaffold(

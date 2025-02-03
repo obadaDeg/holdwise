@@ -23,7 +23,11 @@ class RoleBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? (context.read<AuthCubit>().state as AuthAuthenticated).role
         : AppRoles.patient; // Default role if not authenticated
 
-    final actions = RoleBasedActions.getAppBarActions(role)['actions'] ?? [];
+    final user = context.read<AuthCubit>().state is AuthAuthenticated
+        ? (context.read<AuthCubit>().state as AuthAuthenticated).user
+        : null;
+
+    final actions = RoleBasedActions.getAppBarActions(role, context, user!)['actions'] ?? [];
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(kToolbarHeight),
