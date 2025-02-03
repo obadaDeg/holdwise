@@ -87,7 +87,9 @@ dev_dependencies:
 flutter:
   assets:
     - assets/icons/
-    - assets/pose_classification_model.tflite
+    - assets/models/pose_classification_model.tflite
+    - assets/models/pose_landmarker_lite.task
+    - assets/models/pose_landmark_full.tflite
     - assets/labels.txt
 
   # The following line ensures that the Material Icons font is
