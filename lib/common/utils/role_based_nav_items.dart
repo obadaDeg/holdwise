@@ -1,272 +1,104 @@
-// role_based_nav_items.dart
 import 'package:flutter/material.dart';
 import 'package:holdwise/app/config/constants.dart';
+import 'package:holdwise/app/routes/routes.dart';
 
 class RoleBasedNavItems {
-  static List<Map<String, dynamic>> _getSharedDrawerItems() {
+  /// Common drawer items available to all users
+  static List<Map<String, dynamic>> _getSharedDrawerItems(BuildContext context) {
     return [
-      {
-        'icon': Icons.palette,
-        'label': 'Theme',
-        'onTap': () {
-          // Navigate to dashboard
-        },
-      },
-      {
-        'icon': Icons.person,
-        'label': 'Profile',
-        'onTap': () {
-          // Navigate to profile
-        },
-      },
       {
         'icon': Icons.settings,
         'label': 'Settings',
-        'onTap': () {
-          // Navigate to settings
-        },
+        'onTap': () => Navigator.pushNamed(context, AppRoutes.profileSettings),
       },
       {
         'icon': Icons.help,
         'label': 'Help',
-        'onTap': () {
-          // Navigate to help
-        },
+        'onTap': () => Navigator.pushNamed(context, AppRoutes.help),
       },
       {
         'icon': Icons.info,
         'label': 'About',
-        'onTap': () {
-          // Navigate to about
-        },
+        'onTap': () => Navigator.pushNamed(context, AppRoutes.about),
       }
     ];
   }
-  static List<Map<String, dynamic>> getDrawerItems(String role) {
-    switch (role) {
-      case AppRoles.admin:
-        return [
-          {
-            'icon': Icons.settings,
-            'label': 'Settings',
-            'onTap': () {
-              // Navigate to dashboard
-            },
-          },
-          {
-            'icon': Icons.manage_accounts,
-            'label': 'Manage Users',
-            'onTap': () {
-              // Navigate to manage users
-            },
-          },
-          {
-            'icon': Icons.settings,
-            'label': 'Settings',
-            'onTap': () {
-              // Navigate to settings
-            },
-          },
-          ..._getSharedDrawerItems(),
-        ];
-      case AppRoles.patient:
-        return [
-          {
-            'icon': Icons.person,
-            'label': 'Profile',
-            'onTap': () {
-              // Navigate to profile
-            },
-          },
-          {
-            'icon': Icons.calendar_today,
-            'label': 'Appointments',
-            'onTap': () {
-              // Navigate to appointments
-            },
-          },
-          {
-            'icon': Icons.medical_services,
-            'label': 'Medical Records',
-            'onTap': () {
-              // Navigate to medical records
-            },
-          },
-          ..._getSharedDrawerItems(),
-        ];
-      case AppRoles.specialist:
-        return [
-          {
-            'icon': Icons.schedule,
-            'label': 'Schedule',
-            'onTap': () {
-              // Navigate to schedule
-            },
-          },
-          {
-            'icon': Icons.person,
-            'label': 'Profile',
-            'onTap': () {
-              // Navigate to profile
-            },
-          },
-          {
-            'icon': Icons.message,
-            'label': 'Messages',
-            'onTap': () {
-              // Navigate to messages
-            },
-          },
-          ..._getSharedDrawerItems(),
-        ];
-      default:
-        return [
-          {
-            'icon': Icons.help,
-            'label': 'Help',
-            'onTap': () {
-              // Navigate to help
-            },
-          },
-        ];
-    }
-  }
 
-  static List<Map<String, dynamic>> getBottomNavItems(String role) {
+  /// Role-based drawer items
+  static List<Map<String, dynamic>> getDrawerItems(String role, BuildContext context) {
+    List<Map<String, dynamic>> roleSpecificItems = [];
+
     switch (role) {
       case AppRoles.admin:
-        return [
+        roleSpecificItems = [
           {
             'icon': Icons.dashboard,
             'label': 'Dashboard',
-
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Dashboard'),
-              ),
-              body: Center(
-                child: Text('Dashboard Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.dashboard),
           },
           {
             'icon': Icons.manage_accounts,
             'label': 'Manage Users',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Manage Users'),
-              ),
-              body: Center(
-                child: Text('Manage Users Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.manageUsers),
           },
           {
-            'icon': Icons.settings,
-            'label': 'Settings',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Settings'),
-              ),
-              body: Center(
-                child: Text('Settings Screen'),
-              ),
-            ),
+            'icon': Icons.receipt,
+            'label': 'Reports',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.reports),
           },
         ];
+        break;
+
       case AppRoles.patient:
-        return [
-          {
-            'icon': Icons.person,
-            'label': 'Profile',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Profile'),
-              ),
-              body: Center(
-                child: Text('Profile Screen'),
-              ),
-            ),
-          },
+        roleSpecificItems = [
           {
             'icon': Icons.calendar_today,
             'label': 'Appointments',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Appointments'),
-              ),
-              body: Center(
-                child: Text('Appointments Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.appointments),
           },
           {
-            'icon': Icons.medical_services,
-            'label': 'Medical Records',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Medical Records'),
-              ),
-              body: Center(
-                child: Text('Medical Records Screen'),
-              ),
-            ),
+            'icon': Icons.chat,
+            'label': 'Chat',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.chat),
+          },
+          {
+            'icon': Icons.subscriptions,
+            'label': 'Subscription',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.subscription),
           },
         ];
+        break;
+
       case AppRoles.specialist:
-        return [
+        roleSpecificItems = [
           {
             'icon': Icons.schedule,
             'label': 'Schedule',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Schedule'),
-              ),
-              body: Center(
-                child: Text('Schedule Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.schedule),
           },
           {
-            'icon': Icons.person,
-            'label': 'Profile',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Profile'),
-              ),
-              body: Center(
-                child: Text('Profile Screen'),
-              ),
-            ),
+            'icon': Icons.people,
+            'label': 'Patients',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.patients),
           },
           {
             'icon': Icons.message,
             'label': 'Messages',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Messages'),
-              ),
-              body: Center(
-                child: Text('Messages Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.chat),
           },
         ];
+        break;
+
       default:
-        return [
+        roleSpecificItems = [
           {
             'icon': Icons.help,
             'label': 'Help',
-            'screen': Scaffold(
-              appBar: AppBar(
-                title: Text('Help'),
-              ),
-              body: Center(
-                child: Text('Help Screen'),
-              ),
-            ),
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.help),
           },
         ];
     }
+
+    return [...roleSpecificItems, ..._getSharedDrawerItems(context)];
   }
 }

@@ -25,11 +25,25 @@ class PatientRecords extends StatelessWidget {
               const SizedBox(height: 16),
               TrendChart(),
               const SizedBox(height: 16),
-              AlertResponseGauge(),
+              AlertResponseGauge(
+                responseRate: 90,
+              ),
               const SizedBox(height: 16),
-              StreakBadges(),
+              StreakBadges(
+                currentStreak: 5,
+                longestStreak: 10,
+                latestBadge: "🏆",
+                nextBadgeGoal: 15,
+                earnedBadges: ["🏆", "🥇", "🥈", "🥉"], // New: List of all earned badges
+              ),
               const SizedBox(height: 16),
-              ActivityBreakdown(),
+              ActivityBreakdown(
+                activityData: {
+                  "Gaming": 3.5, // 3.5 hours
+                  "Studying": 4.0, // 4.0 hours
+                  "Working": 2.5, // 2.5 hours
+                },
+              )
             ],
           );
         } else if (state is AuthLoading) {

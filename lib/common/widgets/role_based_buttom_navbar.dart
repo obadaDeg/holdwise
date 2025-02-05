@@ -8,6 +8,7 @@ import 'package:holdwise/features/camera_screen/presentation/pages/camera_screen
 import 'package:holdwise/features/chat/data/models/chat_user.dart';
 import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
 import 'package:holdwise/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:holdwise/features/explore_screen/presentation/pages/explore_screen.dart';
 import 'package:holdwise/features/help_screen/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/manage_specialist/presentation/pages/manage_specialists.dart';
 import 'package:holdwise/features/records/presentation/pages/records.dart';
@@ -30,9 +31,9 @@ class RoleBasedNavBar extends StatelessWidget {
       icon: Icon(icon),
       title: title,
       activeColorSecondary: const Color.fromARGB(255, 187, 151, 240),
-      // activeColorSecondary: AppColors.secondary700,
+      // activeColorSecondary: AppColors.tertiary200,
       activeForegroundColor: const Color.fromARGB(255, 187, 151, 240),
-      // activeForegroundColor: AppColors.secondary700,
+      // activeForegroundColor: AppColors.tertiary200,
       inactiveForegroundColor: AppColors.gray100,
     );
   }
@@ -85,12 +86,7 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: Scaffold(
-              appBar: AppBar(
-                title: Text('Appointments'),
-              ),
-              body: AppointmentsScreen(),
-            ),
+            screen: ExplorePage(),
             item: _buildNavItem(
               icon: Icons.explore,
               title: "Explore",

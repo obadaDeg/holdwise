@@ -31,4 +31,21 @@ class AppRoutes {
   static const String editSpecialist = '/edit-specialist';
   static const String categories = '/categories';
   static const String categoryDetails = '/category-details';
+  static const String subscription = '/subscription';
+  static const String subscriptions = '/subscriptions';
+  static const String subscriptionDetails = '/subscription-details';
+  static const String createSubscription = '/create-subscription';
+  static const String editSubscription = '/edit-subscription';
+  static const String schedule = '/schedule';
+  static const String scheduleDetails = '/schedule-details';
+  static const String createSchedule = '/create-schedule';
+  static const String editSchedule = '/edit-schedule';
+  static const String manageUsers = '/manage-users';
+  static const String records = '/records';
+  static const String help = '/help';
+  static const String faq = '/faq';
+  static const String terms = '/terms';
+  static const String privacy = '/privacy';
+  static const String onboarding = '/onboarding';
+  
 }

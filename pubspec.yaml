@@ -68,6 +68,9 @@ dependencies:
   permission_handler: ^11.3.1
   tflite_flutter: ^0.11.0
   http_parser: ^4.1.2
+  syncfusion_flutter_gauges: ^28.2.3
+  # app_usage: ^3.0.1
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +94,7 @@ flutter:
     - assets/models/pose_landmarker_lite.task
     - assets/models/pose_landmark_full.tflite
     - assets/labels.txt
+    - assets/placeholders/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
