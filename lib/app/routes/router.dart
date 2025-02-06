@@ -4,6 +4,7 @@ import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/routes/protected_routes.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/widgets/role_based_buttom_navbar.dart';
+import 'package:holdwise/features/appointments/presentation/pages/appointments_screen.dart';
 import 'package:holdwise/features/auth/presentation/pages/auth_page.dart';
 import 'package:holdwise/features/auth/presentation/widgets/forgot_password_email_input_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
@@ -16,6 +17,7 @@ import 'package:holdwise/features/info/presentation/pages/about_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
+import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
 import 'package:holdwise/features/subscription/presentation/pages/subscription.dart';
 
 class AppRouter {
@@ -76,9 +78,7 @@ class AppRouter {
             isAdmin: true,
             isPatient: true,
             isSpecialist: true,
-            child: RoleBasedNavBar(
-              role: AppRoles.patient,
-            ),
+            child: RoleBasedNavBar(),
           ),
         );
 
@@ -192,6 +192,16 @@ class AppRouter {
       case AppRoutes.billing:
         return CupertinoPageRoute(
           builder: (_) => const BillingPage(),
+        );
+
+      case AppRoutes.appointments:
+        return CupertinoPageRoute(
+          builder: (_) => const AppointmentsScreen(),
+        );
+
+      case AppRoutes.schedule:
+        return CupertinoPageRoute(
+          builder: (_) => const ScheduleScreen(),
         );
 
       case AppRoutes.about:

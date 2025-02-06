@@ -55,19 +55,13 @@ class RoleBasedActions {
             IconButton(
               icon: Icon(Icons.schedule),
               onPressed: () {
-                // Navigate to schedule
+                Navigator.pushNamed(context, AppRoutes.appointments);
               },
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.chat),
               onPressed: () {
-                // Navigate to profile
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                // Logout logic
+                Navigator.pushNamed(context, AppRoutes.chat, arguments: ChatUser.fromFirebase(user));
               },
             ),
           ],

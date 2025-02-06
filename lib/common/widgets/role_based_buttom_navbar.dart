@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
 import 'package:holdwise/common/widgets/role_based_side_navbar.dart';
 import 'package:holdwise/features/appointments/presentation/pages/appointments_screen.dart';
 import 'package:holdwise/features/camera_screen/presentation/pages/camera_screen.dart';
@@ -20,8 +21,7 @@ import 'package:holdwise/app/config/colors.dart';
 import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedNavBar extends StatelessWidget {
-  final String role;
-  const RoleBasedNavBar({Key? key, required this.role}) : super(key: key);
+  const RoleBasedNavBar({Key? key}) : super(key: key);
 
   ItemConfig _buildNavItem({
     required IconData icon,
@@ -102,10 +102,24 @@ class RoleBasedNavBar extends StatelessWidget {
         ],
       AppRoles.specialist => [
           PersistentTabConfig(
+            screen: DashboardScreen(),
+            item: _buildNavItem(
+              icon: Icons.dashboard,
+              title: "Dashboard",
+            ),
+          ),
+          PersistentTabConfig(
             screen: ScheduleScreen(),
             item: _buildNavItem(
               icon: Icons.schedule,
               title: "Schedule",
+            ),
+          ),
+          PersistentTabConfig(
+            screen: AppointmentsScreen(),
+            item: _buildNavItem(
+              icon: Icons.calendar_today,
+              title: "Appointments",
             ),
           ),
           PersistentTabConfig(
@@ -150,7 +164,7 @@ class RoleBasedNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Retrieve the current theme mode
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isDarkMode = context.watch<ThemeCubit>().state == ThemeMode.dark;
 
     // Apply app colors based on the theme
     final Color backgroundColor =
@@ -160,6 +174,10 @@ class RoleBasedNavBar extends StatelessWidget {
     final user = context.read<AuthCubit>().state is AuthAuthenticated
         ? (context.read<AuthCubit>().state as AuthAuthenticated).user
         : null;
+
+    final role = context.read<AuthCubit>().state is AuthAuthenticated
+        ? (context.read<AuthCubit>().state as AuthAuthenticated).role
+        : AppRoles.patient;
 
     return PersistentTabView(
       drawer: RoleBasedDrawer(role: role),
