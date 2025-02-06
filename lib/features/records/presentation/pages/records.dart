@@ -40,7 +40,8 @@ class RecordsScreen extends StatelessWidget {
       case AppRoles.admin:
         return const AdminReports();
       default:
-        return const PatientRecords();
+        // return const PatientRecords();
+        return const SpecialistRecords();
     }
   }
 }

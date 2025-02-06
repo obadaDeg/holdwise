@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
 
 class ErrorDialog extends StatelessWidget {
   final String title;
@@ -15,10 +17,12 @@ class ErrorDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.read<ThemeCubit>().state == ThemeMode.dark;
+    
     return Dialog(
+      backgroundColor: isDarkMode ? AppColors.gray700 : AppColors.gray100,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       elevation: 10,
-      backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
         child: Column(
@@ -38,7 +42,6 @@ class ErrorDialog extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -47,7 +50,7 @@ class ErrorDialog extends StatelessWidget {
             // Message
             Text(
               message,
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
+              style: const TextStyle(fontSize: 14),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -60,7 +63,6 @@ class ErrorDialog extends StatelessWidget {
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text(
                     "Close",
-                    style: TextStyle(color: Colors.black54),
                   ),
                 ),
                 ElevatedButton(

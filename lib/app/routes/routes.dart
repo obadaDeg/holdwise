@@ -32,10 +32,8 @@ class AppRoutes {
   static const String categories = '/categories';
   static const String categoryDetails = '/category-details';
   static const String subscription = '/subscription';
+  static const String billing = '/billing';
   static const String subscriptions = '/subscriptions';
-  static const String subscriptionDetails = '/subscription-details';
-  static const String createSubscription = '/create-subscription';
-  static const String editSubscription = '/edit-subscription';
   static const String schedule = '/schedule';
   static const String scheduleDetails = '/schedule-details';
   static const String createSchedule = '/create-schedule';

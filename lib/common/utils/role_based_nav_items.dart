@@ -63,7 +63,7 @@ class RoleBasedNavItems {
           },
           {
             'icon': Icons.subscriptions,
-            'label': 'Subscription',
+            'label': 'Become a Premium',
             'onTap': () => Navigator.pushNamed(context, AppRoutes.subscription),
           },
         ];

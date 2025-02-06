@@ -12,8 +12,11 @@ import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
 import 'package:holdwise/features/chat/data/models/chat_user.dart';
 import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
 import 'package:holdwise/features/chat/presentation/pages/home_screen.dart';
+import 'package:holdwise/features/info/presentation/pages/about_screen.dart';
+import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
+import 'package:holdwise/features/subscription/presentation/pages/subscription.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -172,6 +175,42 @@ class AppRouter {
             isPatient: true,
             isSpecialist: true,
             child: SettingsScreen(),
+          ),
+        );
+
+      case AppRoutes.subscription:
+        return CupertinoPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => ProtectedRoute(
+            isAdmin: false,
+            isPatient: true,
+            isSpecialist: false,
+            child: Subscription(),
+          ),
+        );
+
+      case AppRoutes.billing:
+        return CupertinoPageRoute(
+          builder: (_) => const BillingPage(),
+        );
+
+      case AppRoutes.about:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: AboutScreen(),
+          ),
+        );
+
+      case AppRoutes.help:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: HelpScreen(),
           ),
         );
 

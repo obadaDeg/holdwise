@@ -11,7 +11,6 @@ class PreferencesCubit extends Cubit<PreferencesState> {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     emit(state.copyWith(
-      darkMode: prefs.getBool('dark_mode') ?? state.darkMode,
       notifNewForYou: prefs.getBool('notif_new_for_you') ?? state.notifNewForYou,
       notifAccountActivity: prefs.getBool('notif_account_activity') ?? state.notifAccountActivity,
       notifOpportunity: prefs.getBool('notif_opportunity') ?? state.notifOpportunity,
@@ -24,7 +23,6 @@ class PreferencesCubit extends Cubit<PreferencesState> {
 
   Future<void> _savePreferences(PreferencesState newState) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('dark_mode', newState.darkMode);
     await prefs.setBool('notif_new_for_you', newState.notifNewForYou);
     await prefs.setBool('notif_account_activity', newState.notifAccountActivity);
     await prefs.setBool('notif_opportunity', newState.notifOpportunity);
@@ -32,14 +30,6 @@ class PreferencesCubit extends Cubit<PreferencesState> {
     await prefs.setBool('holdwise_auto_sync', newState.holdwiseAutoSync);
     await prefs.setBool('developer_mode', newState.developerMode);
     await prefs.setString('selected_language', newState.selectedLanguage);
-  }
-
-  // --- Update methods for individual preferences ---
-
-  void updateDarkMode(bool value) {
-    final newState = state.copyWith(darkMode: value);
-    emit(newState);
-    _savePreferences(newState);
   }
 
   void updateNotifNewForYou(bool value) {
