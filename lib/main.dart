@@ -1,29 +1,58 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:holdwise/app/holdwise_app.dart';
+import 'package:holdwise/features/sensors/data/cubits/sensors_cubit.dart';
+import 'package:holdwise/features/sensors/data/models/orientation_data.dart';
+import 'package:holdwise/features/sensors/data/models/sensor_data.dart';
+import 'package:holdwise/features/sensors/data/services/sensors_service.dart';
+import 'package:holdwise/features/sensors/data/services/background_services.dart';
 import 'app/config/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize Notification Channel for Chat Messages
   await _initializeNotifications();
+  await initializeBackgroundService();
 
-  // Set the app to portrait mode only
+  final sensorService = HoldWiseSensorService();
+  final sensorCubit = SensorCubit(sensorService);
+
+  // Listen for background service updates
+  FlutterBackgroundService().on("update").listen((event) {
+    if (event != null) {
+      print("📥 Received Update in Main App: $event");
+
+      if (event.containsKey("sensorData")) {
+        final sensorData = SensorData.fromMap(event["sensorData"]);
+        sensorCubit.updateSensorData(sensorData);
+      }
+
+      if (event.containsKey("orientation")) {
+        final orientationData = OrientationData.fromMap(event["orientation"]);
+        sensorCubit.updateOrientation(orientationData);
+      }
+    }
+  });
+
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   ).then((_) {
-    runApp(const HoldWiseApp());
+    runApp(BlocProvider(
+      create: (context) => sensorCubit,
+      child: HoldWiseApp(),
+    ));
   });
 }
+
 
 Future<void> _initializeNotifications() async {
   var result = await FlutterNotificationChannel().registerNotificationChannel(

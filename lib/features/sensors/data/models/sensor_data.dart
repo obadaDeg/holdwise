@@ -1,5 +1,5 @@
 class SensorData {
-  final String type;
+  final String type;      
   final int timestamp;
   final double x;
   final double y;
@@ -31,5 +31,10 @@ class SensorData {
       'y': y,
       'z': z,
     };
+  }
+
+  @override
+  String toString() {
+    return 'SensorData(type: $type, timestamp: $timestamp, x: $x, y: $y, z: $z)';
   }
 }

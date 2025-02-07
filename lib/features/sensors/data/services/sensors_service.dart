@@ -22,6 +22,8 @@ class HoldWiseSensorService {
   int _lastAccelTimestamp = 0;
   SensorData? _lastGyroData;
   SensorData? _lastAccelData;
+  final int _bufferSize = 10; // For a small rolling average
+  final List<SensorData> _recentData = [];
 
   /// Starts sensor monitoring with optimized data collection.
   void startSensorMonitoring() {
@@ -42,7 +44,7 @@ class HoldWiseSensorService {
       _sensorData.add(data);
       _lastGyroData = data;
       _lastGyroTimestamp = currentTimestamp;
-      
+
       onSensorUpdate?.call(_sensorData);
     });
 
@@ -58,12 +60,13 @@ class HoldWiseSensorService {
         z: event.z,
       );
 
-      if (!_isSignificantChange(data, _lastAccelData)) return; // Ignore small changes
+      if (!_isSignificantChange(data, _lastAccelData))
+        return; // Ignore small changes
 
       _sensorData.add(data);
       _lastAccelData = data;
       _lastAccelTimestamp = currentTimestamp;
-      
+
       onSensorUpdate?.call(_sensorData);
     });
 
@@ -81,11 +84,12 @@ class HoldWiseSensorService {
   }
 
   /// **Reduces noise** by filtering out minor variations
-  bool _isSignificantChange(SensorData newData, SensorData? lastData, {double threshold = 0.1}) {
+  bool _isSignificantChange(SensorData newData, SensorData? lastData,
+      {double threshold = 0.1}) {
     if (lastData == null) return true;
     return (newData.x - lastData.x).abs() > threshold ||
-           (newData.y - lastData.y).abs() > threshold ||
-           (newData.z - lastData.z).abs() > threshold;
+        (newData.y - lastData.y).abs() > threshold ||
+        (newData.z - lastData.z).abs() > threshold;
   }
 
   /// **Clears recorded sensor data**
@@ -99,7 +103,27 @@ class HoldWiseSensorService {
     if (norm == 0) return 0;
 
     final double angleRadians = math.acos(z / norm);
+    // print('Angle: ${angleRadians * (180 / math.pi)}');
     return angleRadians * (180 / math.pi);
+  }
+
+  void onNewAccelerometerData(SensorData data) {
+    // Add to buffer
+    _recentData.add(data);
+    if (_recentData.length > _bufferSize) {
+      _recentData.removeAt(0);
+    }
+
+    // Compute rolling average
+    final double avgX = _recentData.map((e) => e.x).reduce((a, b) => a + b) /
+        _recentData.length;
+    final double avgY = _recentData.map((e) => e.y).reduce((a, b) => a + b) /
+        _recentData.length;
+    final double avgZ = _recentData.map((e) => e.z).reduce((a, b) => a + b) /
+        _recentData.length;
+
+    // Emit these smoother values
+    // Or compute a tilt angle from these smoothed x,y,z
   }
 
   /// **Gets the latest recorded sensor data**

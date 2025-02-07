@@ -8,8 +8,8 @@ import 'package:holdwise/features/records/presentation/widgets/alert_response_ga
 import 'package:holdwise/features/records/presentation/widgets/streak_badges.dart';
 import 'package:holdwise/features/records/presentation/widgets/activity_breakdown.dart';
 
-class PatientRecords extends StatelessWidget {
-  const PatientRecords({super.key});
+class PersonalRecords extends StatelessWidget {
+  const PersonalRecords({super.key});
 
   @override
   Widget build(BuildContext context) {

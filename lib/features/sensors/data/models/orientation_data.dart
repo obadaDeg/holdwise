@@ -4,11 +4,16 @@ class OrientationData {
   OrientationData(this.tiltAngle);
 
   bool isCorrectAngle() {
-    // if (orientationType == 'portrait') {
-    //   return tiltAngle >= 70;
-    // } else if (orientationType == 'landscape') {
-    //   return tiltAngle <= 65;
-    // }
-    return tiltAngle >= 70; 
+    return tiltAngle >= 70;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'tiltAngle': tiltAngle,
+    };
+  }
+
+  factory OrientationData.fromMap(Map<String, dynamic> map) {
+    return OrientationData(map['tiltAngle']);
   }
 }
