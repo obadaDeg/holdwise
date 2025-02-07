@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:holdwise/app/config/constants.dart';
+import 'package:holdwise/app/routes/routes.dart';
+import 'package:holdwise/features/chat/data/models/chat_user.dart';
 
 class RoleBasedActions {
-  static Map<String, List<Widget>> getAppBarActions(String role) {
+  static Map<String, List<Widget>> getAppBarActions(String role, BuildContext context, User user) {
     switch (role) {
       case AppRoles.admin:
         return {
@@ -31,21 +34,17 @@ class RoleBasedActions {
         return {
           'actions': [
             IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                // Navigate to profile
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.calendar_today),
+              tooltip: 'Book an appointment',
               onPressed: () {
                 // Navigate to appointments
               },
             ),
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: Icon(Icons.chat),
+              tooltip: 'Chat with specialist',
               onPressed: () {
-                // Logout logic
+                Navigator.pushNamed(context, AppRoutes.chat, arguments: ChatUser.fromFirebase(user));
               },
             ),
           ],
@@ -56,19 +55,13 @@ class RoleBasedActions {
             IconButton(
               icon: Icon(Icons.schedule),
               onPressed: () {
-                // Navigate to schedule
+                Navigator.pushNamed(context, AppRoutes.appointments);
               },
             ),
             IconButton(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.chat),
               onPressed: () {
-                // Navigate to profile
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {
-                // Logout logic
+                Navigator.pushNamed(context, AppRoutes.chat, arguments: ChatUser.fromFirebase(user));
               },
             ),
           ],

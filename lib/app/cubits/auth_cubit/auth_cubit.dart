@@ -74,7 +74,8 @@ class AuthCubit extends Cubit<AuthState> {
 
       // Emit authenticated state based on the role
       final role = idTokenResult.claims?['role'] ?? AppRoles.patient;
-      emit(AuthAuthenticated(user, idTokenResult.token!, role: role));
+      emit(AuthAuthenticated(user, idTokenResult.token!, role: AppRoles.specialist));
+      // emit(AuthAuthenticated(user, idTokenResult.token!, role: role));
     } catch (e) {
       debugPrint('Token validation failed: ${e.toString()}');
       emit(AuthError('Something went wrong. Please log in again.'));

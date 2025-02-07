@@ -1,20 +1,80 @@
 import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/rendering.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:holdwise/app/config/themes.dart';
-// import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
-import 'package:holdwise/app/holdwise_app.dart';
-import 'app/config/firebase_options.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
-void main() async {
-  // debugPaintSizeEnabled = true;
+import 'package:holdwise/app/holdwise_app.dart';
+import 'package:holdwise/features/notifications/data/cubits/notification_cubit.dart';
+import 'package:holdwise/features/sensors/data/cubits/sensors_cubit.dart';
+import 'package:holdwise/features/sensors/data/models/orientation_data.dart';
+import 'package:holdwise/features/sensors/data/models/sensor_data.dart';
+import 'package:holdwise/features/sensors/data/services/sensors_service.dart';
+import 'package:holdwise/features/sensors/data/services/background_services.dart';
+import 'app/config/firebase_options.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 1. Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const HoldWiseApp());
+  // 2. Configure notification channel
+  await _initializeNotifications();
+
+  // 3. Initialize background service
+  await initializeBackgroundService();
+
+  // 4. Create sensor service & cubits (single instances)
+  final sensorService = HoldWiseSensorService();
+  final notificationsCubit = NotificationsCubit();
+  final sensorCubit = SensorCubit(sensorService, notificationsCubit: notificationsCubit);
+
+  // 5. Listen for background service updates
+  FlutterBackgroundService().on("update").listen((event) {
+    if (event != null) {
+      if (event.containsKey("sensorData")) {
+        final sensorData = SensorData.fromMap(event["sensorData"]);
+        sensorCubit.updateSensorData(sensorData);
+      }
+      if (event.containsKey("orientation")) {
+        final orientationData = OrientationData.fromMap(event["orientation"]);
+        sensorCubit.updateOrientation(orientationData);
+      }
+    }
+  });
+
+  // Force portrait orientation
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: sensorCubit),
+        BlocProvider.value(value: notificationsCubit),
+        // You can also provide your AuthCubit, ThemeCubit, etc. here if desired.
+      ],
+      child: const HoldWiseApp(),
+    ),
+  );
+}
+
+Future<void> _initializeNotifications() async {
+  var result = await FlutterNotificationChannel().registerNotificationChannel(
+    description: 'For background posture notifications',
+    id: 'holdwise_posture_channel',
+    importance: NotificationImportance.IMPORTANCE_HIGH,
+    name: 'HoldWise Posture Alerts',
+  );
+  debugPrint('Notification Channel Result: $result');
 }
 
 // class MyApp extends StatelessWidget {

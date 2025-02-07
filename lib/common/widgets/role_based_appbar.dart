@@ -9,38 +9,45 @@ class RoleBasedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool displayActions;
   final List<Widget>? selectedActions;
+  final PreferredSizeWidget? bottom;
 
   const RoleBasedAppBar({
     super.key,
     required this.title,
     this.selectedActions,
     this.displayActions = true,
+    this.bottom,
   });
 
   @override
   Widget build(BuildContext context) {
-    final role = context.read<AuthCubit>().state is AuthAuthenticated
-        ? (context.read<AuthCubit>().state as AuthAuthenticated).role
-        : AppRoles.patient; // Default role if not authenticated
+    final state = context.read<AuthCubit>().state;
+    final role = state is AuthAuthenticated ? state.role : AppRoles.patient;
+    final user = state is AuthAuthenticated ? state.user : null;
 
-    final actions = RoleBasedActions.getAppBarActions(role)['actions'] ?? [];
+    final actions =
+        RoleBasedActions.getAppBarActions(role, context, user!)['actions'] ?? [];
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(kToolbarHeight),
+      preferredSize: Size.fromHeight(
+        kToolbarHeight + (bottom?.preferredSize.height ?? 0.0),
+      ),
       child: Container(
         decoration: const BoxDecoration(
           gradient: Gradients.tertiaryGradient,
         ),
         child: AppBar(
           title: Text(title),
-          actions: displayActions?  selectedActions ?? actions : null,
+          actions: displayActions ? selectedActions ?? actions : null,
           backgroundColor: Colors.transparent,
-          elevation: 0, // Optional: removes shadow for a cleaner gradient look
+          elevation: 0,
+          bottom: bottom,
         ),
       ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0.0));
 }

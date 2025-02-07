@@ -12,6 +12,7 @@ class AppRoutes {
   static const String patientDetails = '/patient-details';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String profileSettings = '/profile-settings';
   static const String about = '/about';
   static const String contact = '/contact';
   static const String notFound = '/not-found';
@@ -30,4 +31,19 @@ class AppRoutes {
   static const String editSpecialist = '/edit-specialist';
   static const String categories = '/categories';
   static const String categoryDetails = '/category-details';
+  static const String subscription = '/subscription';
+  static const String billing = '/billing';
+  static const String subscriptions = '/subscriptions';
+  static const String schedule = '/schedule';
+  static const String scheduleDetails = '/schedule-details';
+  static const String createSchedule = '/create-schedule';
+  static const String editSchedule = '/edit-schedule';
+  static const String manageUsers = '/manage-users';
+  static const String records = '/records';
+  static const String help = '/help';
+  static const String faq = '/faq';
+  static const String terms = '/terms';
+  static const String privacy = '/privacy';
+  static const String onboarding = '/onboarding';
+  
 }
