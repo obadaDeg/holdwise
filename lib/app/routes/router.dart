@@ -15,6 +15,7 @@ import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
 import 'package:holdwise/features/chat/presentation/pages/home_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/about_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
+import 'package:holdwise/features/notifications/presentation/pages/notification_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
 import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
@@ -98,14 +99,7 @@ class AppRouter {
             isAdmin: true,
             isPatient: true,
             isSpecialist: true,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text('Notifications'),
-              ),
-              body: Center(
-                child: Text('Notifications Screen'),
-              ),
-            ),
+            child: NotificationsScreen()
           ),
         );
 

@@ -13,6 +13,7 @@ import 'package:holdwise/features/explore_screen/presentation/pages/explore_scre
 import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/manage_specialist/presentation/pages/manage_specialists.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
+import 'package:holdwise/features/records/presentation/pages/personal_records.dart';
 import 'package:holdwise/features/records/presentation/pages/records.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
@@ -32,9 +33,9 @@ class RoleBasedNavBar extends StatelessWidget {
       icon: Icon(icon),
       title: title,
       activeColorSecondary: const Color.fromARGB(255, 187, 151, 240),
-      // activeColorSecondary: AppColors.tertiary200,
+      // activeColorSecondary: AppColors.tertiary500,
       activeForegroundColor: const Color.fromARGB(255, 187, 151, 240),
-      // activeForegroundColor: AppColors.tertiary200,
+      // activeForegroundColor: AppColors.tertiary500,
       inactiveForegroundColor: AppColors.gray100,
     );
   }
@@ -117,7 +118,7 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: SensorScreen(),
+            screen: PersonalRecords(),
             item: _buildNavItem(
               icon: Icons.calendar_today,
               title: "Sensor",

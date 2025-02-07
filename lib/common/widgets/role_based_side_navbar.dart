@@ -6,6 +6,7 @@ import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/utils/role_based_nav_items.dart';
 import 'package:holdwise/common/widgets/general_dialog.dart';
+import 'package:holdwise/features/notifications/data/cubits/notification_cubit.dart';
 
 class RoleBasedDrawer extends StatelessWidget {
   final String role;
@@ -21,14 +22,16 @@ class RoleBasedDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: [
-          _buildDrawerHeader(context),
+          _buildDrawerHeader(context, isDarkMode),
           Expanded(
             child: ListView.builder(
               itemCount: navItems.length,
               itemBuilder: (context, index) {
                 final item = navItems[index];
                 return ListTile(
-                  leading: Icon(item['icon'], color: isDarkMode ? AppColors.tertiary100 : AppColors.tertiary500),
+                  leading: Icon(item['icon'],
+                      color:
+                          isDarkMode ? AppColors.tertiary100 : AppColors.tertiary500),
                   title: Text(item['label']),
                   onTap: item['onTap'],
                 );
@@ -40,7 +43,6 @@ class RoleBasedDrawer extends StatelessWidget {
             height: 1,
           ),
           ListTile(
-            
             leading: Icon(
               isDarkMode ? Icons.light_mode : Icons.dark_mode,
               color: isDarkMode ? AppColors.tertiary100 : AppColors.tertiary500,
@@ -54,9 +56,11 @@ class RoleBasedDrawer extends StatelessWidget {
             onTap: () => context.read<ThemeCubit>().toggleTheme(),
           ),
           ListTile(
-            leading: Icon(Icons.logout, color: isDarkMode ? AppColors.error : AppColors.danger),
-            title:
-                Text('Logout', style: TextStyle(color: isDarkMode ? AppColors.error : AppColors.danger)),
+            leading: Icon(Icons.logout,
+                color: isDarkMode ? AppColors.error : AppColors.danger),
+            title: Text('Logout',
+                style: TextStyle(
+                    color: isDarkMode ? AppColors.error : AppColors.danger)),
             onTap: () => _confirmLogout(context),
           ),
         ],
@@ -64,7 +68,7 @@ class RoleBasedDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerHeader(BuildContext context) {
+  Widget _buildDrawerHeader(BuildContext context, bool isDarkMode) {
     final authState = context.watch<AuthCubit>().state;
     String? imageURL;
     if (authState is AuthAuthenticated) {
@@ -73,7 +77,8 @@ class RoleBasedDrawer extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
+      padding:
+          const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
       decoration: BoxDecoration(
         gradient: Gradients.tertiaryGradient,
         borderRadius: const BorderRadius.only(
@@ -117,7 +122,7 @@ class RoleBasedDrawer extends StatelessWidget {
                   ],
                 ),
               ),
-
+              // Notification icon with badge
               Stack(
                 children: [
                   IconButton(
@@ -126,23 +131,31 @@ class RoleBasedDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, AppRoutes.notifications);
                     },
                   ),
-                  Positioned(
-                    right: 6,
-                    top: 6,
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      decoration: const BoxDecoration(
-                        color: AppColors.secondary500,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Text(
-                        '1', // You can replace this with a dynamic count
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                  // Use BlocBuilder to update the badge count dynamically.
+                  BlocBuilder<NotificationsCubit, NotificationsState>(
+                    builder: (context, state) {
+                      final count = state.notifications.length;
+                      return Positioned(
+                        right: 6,
+                        top: 6,
+                        child: count > 0
+                            ? Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.secondary500,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$count',
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )
+                            : const SizedBox(),
+                      );
+                    },
                   ),
                 ],
               ),

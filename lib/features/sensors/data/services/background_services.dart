@@ -1,18 +1,23 @@
 import 'dart:async';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:holdwise/features/sensors/data/services/sensors_service.dart';
+
+import 'sensors_service.dart';
 
 Future<void> initializeBackgroundService() async {
   final service = FlutterBackgroundService();
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
+      // This callback is invoked when service starts
       onStart: onStart,
       autoStart: true,
       isForegroundMode: true,
+      notificationChannelId: 'holdwise_posture_channel',
+      // you can set other notification properties here
     ),
     iosConfiguration: IosConfiguration(
+      // Only used on foreground fetch
       onForeground: onStart,
     ),
   );
@@ -22,27 +27,33 @@ void onStart(ServiceInstance service) {
   final sensorService = HoldWiseSensorService();
   sensorService.startSensorMonitoring();
 
-  // Listen to sensor updates and send them to the main app
-  sensorService.onSensorUpdate = (sensorData) {
-    if (sensorData.isNotEmpty) {
-      print("📡 Sending Sensor Data to Main App: ${sensorData.last}");
-      service.invoke("update", {"sensorData": sensorData.last.toMap()});
+  // Every time we get sensor data, broadcast the last entry
+  sensorService.onSensorUpdate = (buffer) {
+    if (buffer.isNotEmpty) {
+      final latest = buffer.last;
+      service.invoke("update", {
+        "sensorData": latest.toMap(),
+      });
     }
   };
 
   sensorService.onOrientationChange = (orientation) {
-    print("📡 Sending Orientation Data to Main App: ${orientation.tiltAngle}");
-    service.invoke("update", {"orientation": orientation.toMap()});
+    service.invoke("update", {
+      "orientation": {
+        "tiltAngle": orientation.tiltAngle,
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+      }
+    });
   };
 
-  Timer.periodic(const Duration(seconds: 5), (timer) async {
+  // Keep the service alive & broadcast status
+  Timer.periodic(const Duration(seconds: 10), (timer) async {
     if (service is AndroidServiceInstance) {
+      // If no longer foreground, bring it back
       if (!(await service.isForegroundService())) {
         service.setAsForegroundService();
       }
     }
-
-    service.invoke("update", {"message": "Sensors Running in Background"});
+    service.invoke("update", {"message": "Background Service Active"});
   });
 }
-

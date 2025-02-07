@@ -1,6 +1,6 @@
 class SensorData {
-  final String type;      
-  final int timestamp;
+  final String type;       // 'accelerometer' or 'gyroscope'
+  final int timestamp;     // epoch ms
   final double x;
   final double y;
   final double z;
@@ -35,6 +35,6 @@ class SensorData {
 
   @override
   String toString() {
-    return 'SensorData(type: $type, timestamp: $timestamp, x: $x, y: $y, z: $z)';
+    return 'SensorData(type: $type, ts: $timestamp, x: $x, y: $y, z: $z)';
   }
 }

@@ -5,7 +5,7 @@ import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/config/themes.dart';
 import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/common/widgets/role_based_appbar.dart';
-import 'package:holdwise/features/records/presentation/pages/patient_records.dart';
+import 'package:holdwise/features/records/presentation/pages/personal_records.dart';
 import 'package:holdwise/features/records/presentation/pages/specialist_records.dart';
 import 'package:holdwise/features/records/presentation/pages/admin_reports.dart';
 
