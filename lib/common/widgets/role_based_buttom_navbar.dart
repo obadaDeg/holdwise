@@ -16,7 +16,7 @@ import 'package:holdwise/features/profile/presentation/pages/settings_screen_dia
 import 'package:holdwise/features/records/presentation/pages/personal_records.dart';
 import 'package:holdwise/features/records/presentation/pages/records.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
-import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
+import 'package:holdwise/features/appointments/presentation/pages/specialist_appointments_page.dart';
 import 'package:holdwise/features/sensors/presentation/pages/sensors_screen.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:holdwise/app/config/colors.dart';
@@ -111,17 +111,17 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: ScheduleScreen(),
+            screen: SpecialistAppointmentsPage(),
             item: _buildNavItem(
               icon: Icons.schedule,
               title: "Schedule",
             ),
           ),
           PersistentTabConfig(
-            screen: PersonalRecords(),
+            screen: FullScreenCamera(),
             item: _buildNavItem(
-              icon: Icons.calendar_today,
-              title: "Sensor",
+              icon: Icons.camera,
+              title: "Camera",
             ),
           ),
           PersistentTabConfig(

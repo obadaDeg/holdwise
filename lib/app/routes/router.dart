@@ -18,7 +18,7 @@ import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/notifications/presentation/pages/notification_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
-import 'package:holdwise/features/schedule_screen/presentation/pages/schedule_screen.dart';
+import 'package:holdwise/features/appointments/presentation/pages/specialist_appointments_page.dart';
 import 'package:holdwise/features/subscription/presentation/pages/subscription.dart';
 
 class AppRouter {

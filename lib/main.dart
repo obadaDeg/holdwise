@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -29,6 +30,7 @@ Future<void> main() async {
 
   // 3. Initialize background service
   await initializeBackgroundService();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // 4. Create sensor service & cubits (single instances)
   final sensorService = HoldWiseSensorService();
@@ -65,6 +67,10 @@ Future<void> main() async {
       child: const HoldWiseApp(),
     ),
   );
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message: ${message.messageId}');
 }
 
 Future<void> _initializeNotifications() async {

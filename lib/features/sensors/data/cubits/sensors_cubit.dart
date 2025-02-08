@@ -190,8 +190,9 @@ class SensorCubit extends Cubit<SensorState> {
 
     await _flutterLocalNotificationsPlugin.show(
       0, // notification ID
-      'Posture Alert',
-      'Your posture seems off. Please adjust your position.',
+      // 'Posture Alert: Your phone is not upright',
+      '🚨 Posture Alert :',
+      'Please adjust your phone Tilt Angle to avoid neck strain.\nYour posture seems off. Please adjust your position to avoid neck strain.',
       platformChannelSpecifics,
       payload: 'posture_violation',
     );
