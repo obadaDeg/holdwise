@@ -77,9 +77,11 @@ class DashboardScreen extends StatelessWidget {
                           child: ViolationScatterChart(
                             violations: violations,
                             referenceDate: DateTime.now(),
+                            displayFilter: false,
                           ),
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 72),
                     ],
                   );
                 } else {
@@ -113,7 +115,9 @@ class DashboardScreen extends StatelessWidget {
                         ViolationScatterChart(
                           violations: violations,
                           referenceDate: DateTime.now(),
+                          displayFilter: false,
                         ),
+                        const SizedBox(height: 72),
                       ],
                     ),
                   );

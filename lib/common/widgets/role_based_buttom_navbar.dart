@@ -111,17 +111,27 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: SpecialistAppointmentsPage(),
-            item: _buildNavItem(
-              icon: Icons.schedule,
-              title: "Schedule",
-            ),
-          ),
+              screen: PersonalRecords(),
+              // screen: RecordsScreen(),
+              item: _buildNavItem(
+                icon: Icons.analytics,
+                // patients records but it should be shorter
+                title: "Records",
+              )),
           PersistentTabConfig(
             screen: FullScreenCamera(),
             item: _buildNavItem(
               icon: Icons.camera,
               title: "Camera",
+            ),
+          ),
+          PersistentTabConfig(
+            screen: SpecialistAppointmentsPage(
+              specialistId: user.uid,
+            ),
+            item: _buildNavItem(
+              icon: Icons.schedule,
+              title: "Schedule",
             ),
           ),
           PersistentTabConfig(
@@ -131,25 +141,25 @@ class RoleBasedNavBar extends StatelessWidget {
               title: "Profile",
             ),
           ),
-          PersistentTabConfig(
-            screen: FutureBuilder<ChatUser>(
-              future: ChatUser.fromFirebase(user),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Error loading user"));
-                } else if (!snapshot.hasData) {
-                  return Center(child: Text("No user data"));
-                }
-                return ChatScreen(user: snapshot.data!);
-              },
-            ),
-            item: _buildNavItem(
-              icon: Icons.message,
-              title: "Messages",
-            ),
-          ),
+          // PersistentTabConfig(
+          //   screen: FutureBuilder<ChatUser>(
+          //     future: ChatUser.fromFirebase(user),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return Center(child: CircularProgressIndicator());
+          //       } else if (snapshot.hasError) {
+          //         return Center(child: Text("Error loading user"));
+          //       } else if (!snapshot.hasData) {
+          //         return Center(child: Text("No user data"));
+          //       }
+          //       return ChatScreen(user: snapshot.data!);
+          //     },
+          //   ),
+          //   item: _buildNavItem(
+          //     icon: Icons.message,
+          //     title: "Messages",
+          //   ),
+          // ),
         ],
       _ => [
           PersistentTabConfig(

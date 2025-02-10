@@ -1,4 +1,3 @@
-// lib/features/appointments/data/repositories/appointment_repository.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:holdwise/features/appointments/data/models/appointment.dart';
 
@@ -8,17 +7,23 @@ class AppointmentRepository {
   AppointmentRepository({FirebaseFirestore? firestore})
       : firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference get _appointments =>
-      firestore.collection('appointments');
+  CollectionReference get _appointments => firestore.collection('appointments');
 
   /// Create a new appointment.
   Future<void> createAppointment(Appointment appointment) async {
-    await _appointments.add(appointment.toFirestore());
+    final docRef = _appointments.doc(); // generate new document ID
+    final newAppointment = appointment.copyWith(
+      id: docRef.id,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    await docRef.set(newAppointment.toFirestore());
   }
 
   /// Update an existing appointment.
   Future<void> updateAppointment(Appointment appointment) async {
-    await _appointments.doc(appointment.id).update(appointment.toFirestore());
+    final updatedAppointment = appointment.copyWith(updatedAt: DateTime.now());
+    await _appointments.doc(appointment.id).update(updatedAppointment.toFirestore());
   }
 
   /// Delete an appointment.
@@ -26,7 +31,7 @@ class AppointmentRepository {
     await _appointments.doc(appointmentId).delete();
   }
 
-  /// Stream appointments for a specific user (patient or specialist).
+  /// Stream appointments for a specific user.
   Stream<List<Appointment>> streamAppointmentsForUser({
     required String userId,
     required bool isSpecialist,

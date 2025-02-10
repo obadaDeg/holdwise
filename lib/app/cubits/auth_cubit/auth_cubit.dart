@@ -123,6 +123,7 @@ class AuthCubit extends Cubit<AuthState> {
       final user = credential.user;
       if (user != null) {
         final idTokenResult = await user.getIdTokenResult();
+        final role = idTokenResult.claims?['role'] ?? AppRoles.patient;
         final lastSignInTime = user.metadata.lastSignInTime;
         final creationTime = user.metadata.creationTime;
 
@@ -134,6 +135,8 @@ class AuthCubit extends Cubit<AuthState> {
             'creationTime': creationTime?.toIso8601String(),
           },
         );
+
+        emit(AuthAuthenticated(user, idTokenResult.token!, role: role));
 
         _validateToken(user);
       } else {
@@ -169,9 +172,12 @@ class AuthCubit extends Cubit<AuthState> {
           path: ApiPath.user(user.uid),
           data: {
             'uid': user.uid,
+            'displayName': user.displayName,
+            'role': AppRoles.patient,
             'email': user.email,
             'creationTime': creationTime?.toIso8601String(),
             'lastSignInTime': null,
+
           },
         );
 

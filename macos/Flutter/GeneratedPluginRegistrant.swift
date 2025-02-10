@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import ambient_light
 import cloud_firestore
 import connectivity_plus
 import emoji_picker_flutter
@@ -22,6 +23,7 @@ import sqflite_darwin
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  AmbientLightPlugin.register(with: registry.registrar(forPlugin: "AmbientLightPlugin"))
   FLTFirebaseFirestorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseFirestorePlugin"))
   ConnectivityPlusPlugin.register(with: registry.registrar(forPlugin: "ConnectivityPlusPlugin"))
   EmojiPickerFlutterPlugin.register(with: registry.registrar(forPlugin: "EmojiPickerFlutterPlugin"))

@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  ambient_light
   emoji_picker_flutter
   file_selector_linux
   flutter_secure_storage_linux
