@@ -1,28 +1,29 @@
-part of 'appointment_cubit.dart';
+import 'package:equatable/equatable.dart';
+import 'package:holdwise/features/appointments/data/models/appointment.dart';
 
 class AppointmentState extends Equatable {
   final List<Appointment> appointments;
-  final bool loading;
+  final bool isLoading;
   final String? error;
 
   const AppointmentState({
     this.appointments = const [],
-    this.loading = false,
+    this.isLoading = false,
     this.error,
   });
 
   AppointmentState copyWith({
     List<Appointment>? appointments,
-    bool? loading,
+    bool? isLoading,
     String? error,
   }) {
     return AppointmentState(
       appointments: appointments ?? this.appointments,
-      loading: loading ?? this.loading,
+      isLoading: isLoading ?? this.isLoading,
       error: error,
     );
   }
 
   @override
-  List<Object?> get props => [appointments, loading, error];
+  List<Object?> get props => [appointments, isLoading, error];
 }

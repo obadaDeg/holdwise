@@ -19,12 +19,14 @@ class FilterCubit extends Cubit<ViolationFilter> {
 /// A widget that shows a scatter chart of violations.
 class ViolationScatterChart extends StatefulWidget {
   final List<OrientationData> violations;
-  final DateTime referenceDate; // For day/week/month grouping
+  final DateTime referenceDate;
+  final bool displayFilter;
 
   const ViolationScatterChart({
     Key? key,
     required this.violations,
     required this.referenceDate,
+    this.displayFilter = true,
   }) : super(key: key);
 
   @override
@@ -328,21 +330,28 @@ class _ViolationScatterChartState extends State<ViolationScatterChart> {
               maxY = 24;
               break;
           }
-
+          
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Filter button row (aligned to the end)
+              widget.displayFilter ?
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Text(
+                    "Filter: ${currentFilter.toString().split('.').last}",
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.black),
+                  ),
                   IconButton(
                     icon: Icon(Icons.filter_list,
                         color: isDarkMode ? Colors.white : Colors.black),
                     onPressed: _openFilterModal,
                   ),
                 ],
-              ),
+              )
+              : const SizedBox(),
               // The scatter chart container.
               Container(
                 height: 300,

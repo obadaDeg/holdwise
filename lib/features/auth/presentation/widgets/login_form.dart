@@ -40,7 +40,7 @@ class _LoginFormState extends State<LoginForm> {
             SnackBar(content: Text(state.message)),
           );
         } else if (state is AuthAuthenticated) {
-          print(state.user);
+          print('${state.user}, user');
           ScaffoldMessenger.of(context).showSnackBar(
 
             const SnackBar(content: Text('Login successful!')),

@@ -23,6 +23,7 @@ class AppRoutes {
   static const String searchResults = '/search-results';
   static const String appointments = '/appointments';
   static const String appointmentDetails = '/appointment-details';
+  static const String specialistAppointments = '/specialist-appointments';
   static const String createAppointment = '/create-appointment';
   static const String editAppointment = '/edit-appointment';
   static const String specialists = '/specialists';
@@ -39,11 +40,12 @@ class AppRoutes {
   static const String createSchedule = '/create-schedule';
   static const String editSchedule = '/edit-schedule';
   static const String manageUsers = '/manage-users';
+  static const String personalRecords = '/personal-records';
   static const String records = '/records';
   static const String help = '/help';
   static const String faq = '/faq';
   static const String terms = '/terms';
   static const String privacy = '/privacy';
   static const String onboarding = '/onboarding';
-  
+  static const String sensors = '/sensors';
 }

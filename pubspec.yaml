@@ -74,6 +74,8 @@ dependencies:
   flutter_background_service_android: ^6.3.0
   connectivity_plus: ^6.1.2
   flutter_local_notifications: ^18.0.1
+  ambient_light: ^0.1.2
+  
 
 dev_dependencies:
   flutter_test:

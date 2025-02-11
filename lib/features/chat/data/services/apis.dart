@@ -10,7 +10,6 @@ import 'package:holdwise/features/chat/data/models/chat_user.dart';
 import 'package:holdwise/features/chat/data/models/message.dart';
 import 'package:http/http.dart';
 
-import 'notification_access_token.dart';
 
 class APIs {
   // for authentication
@@ -80,7 +79,8 @@ class APIs {
       const projectID = 'we-chat-75f13';
 
       // get firebase admin token
-      final bearerToken = await NotificationAccessToken.getToken;
+      FirebaseAuth auth = FirebaseAuth.instance;
+      final bearerToken = await auth.currentUser!.getIdToken();
 
       log('bearerToken: $bearerToken');
 

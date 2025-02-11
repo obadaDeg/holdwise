@@ -1,7 +1,12 @@
-// lib/features/appointments/data/models/appointment.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum AppointmentStatus { pending, confirmed, declined, completed }
+/// Available statuses include:
+/// - pending: appointment requested
+/// - confirmed: appointment accepted
+/// - declined: appointment declined
+/// - completed: appointment finished
+/// - cancelled: appointment cancelled by the patient or specialist
+enum AppointmentStatus { pending, confirmed, declined, completed, cancelled }
 
 class Appointment {
   final String id;
@@ -21,6 +26,26 @@ class Appointment {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  Appointment copyWith({
+    String? id,
+    String? patientId,
+    String? specialistId,
+    DateTime? appointmentTime,
+    AppointmentStatus? status,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Appointment(
+      id: id ?? this.id,
+      patientId: patientId ?? this.patientId,
+      specialistId: specialistId ?? this.specialistId,
+      appointmentTime: appointmentTime ?? this.appointmentTime,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 
   factory Appointment.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -47,7 +72,7 @@ class Appointment {
   }
 
   static AppointmentStatus _statusFromString(String status) {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'pending':
         return AppointmentStatus.pending;
       case 'confirmed':
@@ -56,6 +81,8 @@ class Appointment {
         return AppointmentStatus.declined;
       case 'completed':
         return AppointmentStatus.completed;
+      case 'cancelled':
+        return AppointmentStatus.cancelled;
       default:
         return AppointmentStatus.pending;
     }

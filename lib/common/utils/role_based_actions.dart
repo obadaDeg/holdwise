@@ -37,7 +37,7 @@ class RoleBasedActions {
               icon: Icon(Icons.calendar_today),
               tooltip: 'Book an appointment',
               onPressed: () {
-                // Navigate to appointments
+                Navigator.pushNamed(context, AppRoutes.appointments, arguments: user.uid);
               },
             ),
             IconButton(
@@ -55,7 +55,7 @@ class RoleBasedActions {
             IconButton(
               icon: Icon(Icons.schedule),
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.appointments);
+                Navigator.pushNamed(context, AppRoutes.appointments, arguments: user.uid);
               },
             ),
             IconButton(

@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:holdwise/features/sensors/data/models/orientation_data.dart';
+import 'package:holdwise/features/sensors/data/models/sensor_data.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-
-import '../models/sensor_data.dart';
-import '../models/orientation_data.dart';
+import 'package:ambient_light/ambient_light.dart';
 
 class HoldWiseSensorService {
   // Subscriptions
   StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;
   StreamSubscription<AccelerometerEvent>? _accelerometerSubscription;
-  StreamSubscription<AccelerometerEvent>? _orientationSubscription;
+  StreamSubscription<AccelerometerEvent>?   _orientationSubscription;
+  StreamSubscription<AmbientLight>? _lightSubscription;
+
+
 
   // Callbacks for new sensor data & orientation
   Function(List<SensorData> sensorData)? onSensorUpdate;
@@ -21,6 +24,7 @@ class HoldWiseSensorService {
   // Throttle intervals (ms)
   static const int _gyroThrottleMs = 200;
   static const int _accelThrottleMs = 200;
+  static const int _lightThrottleMs = 200;
 
   // For throttling
   int _lastGyroTimestamp = 0;
@@ -33,7 +37,7 @@ class HoldWiseSensorService {
 
   void startSensorMonitoring() {
     // 1) Gyroscope
-    _gyroscopeSubscription = gyroscopeEvents.listen((event) {
+    _gyroscopeSubscription = gyroscopeEventStream().listen((event) {
       final now = DateTime.now().millisecondsSinceEpoch;
       if (now - _lastGyroTimestamp < _gyroThrottleMs) return;
 
@@ -54,7 +58,7 @@ class HoldWiseSensorService {
     });
 
     // 2) Accelerometer
-    _accelerometerSubscription = accelerometerEvents.listen((event) {
+    _accelerometerSubscription = accelerometerEventStream().listen((event) {
       final now = DateTime.now().millisecondsSinceEpoch;
       if (now - _lastAccelTimestamp < _accelThrottleMs) return;
 
@@ -75,7 +79,7 @@ class HoldWiseSensorService {
     });
 
     // 3) Orientation stream (re-using accelerometer)
-    _orientationSubscription = accelerometerEvents.listen((event) {
+    _orientationSubscription = accelerometerEventStream().listen((event) {
       final double angle = _calculateTiltAngle(event.x, event.y, event.z);
       onOrientationChange?.call(OrientationData(
         tiltAngle: angle,

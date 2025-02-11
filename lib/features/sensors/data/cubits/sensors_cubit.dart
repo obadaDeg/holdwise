@@ -33,13 +33,13 @@ class SensorCubit extends Cubit<SensorState> {
 
     // Start a repeating timer to batch data
     _batchUploadTimer = Timer.periodic(
-      const Duration(seconds: 30),
+      const Duration(seconds: 60),
       (_) => _aggregateAndStoreData(),
     );
 
     // Periodically check posture violations
     _violationCheckTimer = Timer.periodic(
-      const Duration(seconds: 5),
+      const Duration(seconds: 15),
       (_) => _checkPostureViolations(),
     );
   }

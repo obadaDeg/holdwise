@@ -19,6 +19,7 @@ import 'package:holdwise/features/notifications/presentation/pages/notification_
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
 import 'package:holdwise/features/appointments/presentation/pages/specialist_appointments_page.dart';
+import 'package:holdwise/features/records/presentation/pages/personal_records.dart';
 import 'package:holdwise/features/subscription/presentation/pages/subscription.dart';
 
 class AppRouter {
@@ -96,11 +97,10 @@ class AppRouter {
         return CupertinoPageRoute(
           fullscreenDialog: true,
           builder: (_) => ProtectedRoute(
-            isAdmin: true,
-            isPatient: true,
-            isSpecialist: true,
-            child: NotificationsScreen()
-          ),
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: NotificationsScreen()),
         );
 
       // case AppRoutes.chat:
@@ -188,14 +188,59 @@ class AppRouter {
           builder: (_) => const BillingPage(),
         );
 
-      case AppRoutes.appointments:
-        return CupertinoPageRoute(
-          builder: (_) => const AppointmentsScreen(),
-        );
-
       case AppRoutes.schedule:
+        // Expecting patientId to be passed as a String in settings.arguments.
+        if (settings.arguments is String) {
+          final patientId = settings.arguments as String;
+          return CupertinoPageRoute(
+            builder: (_) => ProtectedRoute(
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: PatientAppointmentsPage(patientId: patientId),
+            ),
+          );
+        } else {
+          return CupertinoPageRoute(
+            builder: (_) => Scaffold(
+              body: Center(
+                child: Text('Missing patient ID for Schedule Screen'),
+              ),
+            ),
+          );
+        }
+
+      case AppRoutes.specialistAppointments:
+        // Expecting specialistId to be passed as a String.
+        if (settings.arguments is String) {
+          final specialistId = settings.arguments as String;
+          return CupertinoPageRoute(
+            builder: (_) => ProtectedRoute(
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: SpecialistAppointmentsPage(specialistId: specialistId),
+            ),
+          );
+        } else {
+          return CupertinoPageRoute(
+            builder: (_) => Scaffold(
+              body: Center(
+                child: Text(
+                    'Missing specialist ID for Specialist Appointments Page'),
+              ),
+            ),
+          );
+        }
+
+      case AppRoutes.personalRecords:
         return CupertinoPageRoute(
-          builder: (_) => const ScheduleScreen(),
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: PersonalRecords(),
+          ),
         );
 
       case AppRoutes.about:

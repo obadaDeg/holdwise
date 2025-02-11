@@ -82,6 +82,11 @@ class RoleBasedNavItems {
             'onTap': () => Navigator.pushNamed(context, AppRoutes.patients),
           },
           {
+            'icon': Icons.person,
+            'label': 'Personal Records',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.personalRecords),
+          },
+          {
             'icon': Icons.message,
             'label': 'Messages',
             'onTap': () => Navigator.pushNamed(context, AppRoutes.chat),
