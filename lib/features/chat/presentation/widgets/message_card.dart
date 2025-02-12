@@ -23,7 +23,7 @@ class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
-    bool isMe = APIs.user.uid == widget.message.fromId;
+    bool isMe = ChatAPIs.user.uid == widget.message.fromId;
     return InkWell(
         onLongPress: () => _showBottomSheet(isMe, mq),
         child: isMe ? _greenMessage(mq) : _blueMessage(mq));
@@ -33,7 +33,7 @@ class _MessageCardState extends State<MessageCard> {
   Widget _blueMessage(Size mq) {
     //update last read message if sender and receiver are different
     if (widget.message.read.isEmpty) {
-      APIs.updateMessageReadStatus(widget.message);
+      ChatAPIs.updateMessageReadStatus(widget.message);
     }
 
 
@@ -259,7 +259,7 @@ class _MessageCardState extends State<MessageCard> {
                         color: Colors.red, size: 26),
                     name: 'Delete Message',
                     onTap: (ctx) async {
-                      await APIs.deleteMessage(widget.message).then((value) {
+                      await ChatAPIs.deleteMessage(widget.message).then((value) {
                         //for hiding bottom sheet
                         if (ctx.mounted) Navigator.pop(ctx);
                       });
@@ -342,7 +342,7 @@ class _MessageCardState extends State<MessageCard> {
                 //update button
                 MaterialButton(
                     onPressed: () {
-                      APIs.updateMessage(widget.message, updatedMsg);
+                      ChatAPIs.updateMessage(widget.message, updatedMsg);
                       //hide alert dialog
                       Navigator.pop(ctx);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Class for general app information
 class AppInfo {
@@ -51,7 +52,7 @@ class WarningMessages {
 // Class for API keys (Move to environment variables or config files)
 class APIKeys {
   // Avoid hardcoding API keys in production. Consider using a secure storage or environment variable.
-  static const String openAiApiKey = "your-api-key-here";
+  static String OPENAI_API_KEY = dotenv.env['OPENAI_API_KEY'] ?? 'No API Key Found';
 }
 
 class Constants {

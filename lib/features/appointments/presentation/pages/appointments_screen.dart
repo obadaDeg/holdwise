@@ -8,12 +8,15 @@ import 'package:holdwise/features/appointments/presentation/pages/appointment_de
 class PatientAppointmentsPage extends StatelessWidget {
   final String patientId;
 
-  const PatientAppointmentsPage({Key? key, required this.patientId}) : super(key: key);
+  const PatientAppointmentsPage({Key? key, required this.patientId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Start fetching appointments for this patient.
-    context.read<AppointmentCubit>().fetchAppointments(patientId, isSpecialist: false);
+    context
+        .read<AppointmentCubit>()
+        .fetchAppointments(patientId, isSpecialist: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -43,9 +46,12 @@ class PatientAppointmentsPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => AppointmentDetailsPage(
-                        appointment: appointment,
-                        isSpecialist: false,
+                      builder: (context) => BlocProvider.value(
+                        value: context.read<AppointmentCubit>(),
+                        child: AppointmentDetailsPage(
+                          appointment: appointment,
+                          isSpecialist: false,
+                        ),
                       ),
                     ),
                   );

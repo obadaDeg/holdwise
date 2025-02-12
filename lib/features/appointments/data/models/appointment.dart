@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Available statuses include:
@@ -12,6 +14,7 @@ class Appointment {
   final String id;
   final String patientId;
   final String specialistId;
+  final String patientName; // <-- New field for display name
   final DateTime appointmentTime;
   final AppointmentStatus status;
   final DateTime createdAt;
@@ -21,6 +24,7 @@ class Appointment {
     required this.id,
     required this.patientId,
     required this.specialistId,
+    required this.patientName,
     required this.appointmentTime,
     required this.status,
     required this.createdAt,
@@ -31,6 +35,7 @@ class Appointment {
     String? id,
     String? patientId,
     String? specialistId,
+    String? patientName,
     DateTime? appointmentTime,
     AppointmentStatus? status,
     DateTime? createdAt,
@@ -40,6 +45,7 @@ class Appointment {
       id: id ?? this.id,
       patientId: patientId ?? this.patientId,
       specialistId: specialistId ?? this.specialistId,
+      patientName: patientName ?? this.patientName,
       appointmentTime: appointmentTime ?? this.appointmentTime,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
@@ -49,10 +55,12 @@ class Appointment {
 
   factory Appointment.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    log('data: $data');
     return Appointment(
       id: doc.id,
       patientId: data['patientId'] as String,
       specialistId: data['specialistId'] as String,
+      patientName: data['patientName'] as String,
       appointmentTime: (data['appointmentTime'] as Timestamp).toDate(),
       status: _statusFromString(data['status'] as String),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
@@ -64,6 +72,7 @@ class Appointment {
     return {
       'patientId': patientId,
       'specialistId': specialistId,
+      'patientName': patientName, // Store the display name
       'appointmentTime': Timestamp.fromDate(appointmentTime),
       'status': status.toString().split('.').last,
       'createdAt': Timestamp.fromDate(createdAt),

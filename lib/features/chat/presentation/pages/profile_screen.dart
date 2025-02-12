@@ -45,10 +45,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   //for showing progress dialog
                   Dialogs.showLoading(context);
 
-                  await APIs.updateActiveStatus(false);
+                  await ChatAPIs.updateActiveStatus(false);
 
                   //sign out from app
-                  await APIs.auth.signOut().then((value) async {
+                  await ChatAPIs.auth.signOut().then((value) async {
                     await GoogleSignIn().signOut().then((value) {
                       //for hiding progress dialog
                       Navigator.pop(context);
@@ -134,7 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // name input field
                     TextFormField(
                       initialValue: widget.user.name,
-                      onSaved: (val) => APIs.me.name = val ?? '',
+                      onSaved: (val) => ChatAPIs.me.name = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // about input field
                     TextFormField(
                       initialValue: widget.user.about,
-                      onSaved: (val) => APIs.me.about = val ?? '',
+                      onSaved: (val) => ChatAPIs.me.about = val ?? '',
                       validator: (val) => val != null && val.isNotEmpty
                           ? null
                           : 'Required Field',
@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
-                          APIs.updateUserInfo().then((value) {
+                          ChatAPIs.updateUserInfo().then((value) {
                             Dialogs.showSnackbar(
                                 context, 'Profile Updated Successfully!');
                           });
@@ -240,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _image = image.path;
                           });
 
-                          APIs.updateProfilePicture(File(_image!));
+                          ChatAPIs.updateProfilePicture(File(_image!));
 
                           // for hiding bottom sheet
                           if (mounted) Navigator.pop(context);
@@ -266,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             _image = image.path;
                           });
 
-                          APIs.updateProfilePicture(File(_image!));
+                          ChatAPIs.updateProfilePicture(File(_image!));
 
                           // for hiding bottom sheet
                           if (mounted) Navigator.pop(context);

@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:holdwise/app/config/constants.dart';
 
 import 'package:holdwise/app/holdwise_app.dart';
 import 'package:holdwise/features/notifications/data/cubits/notification_cubit.dart';
@@ -19,6 +20,7 @@ import 'package:holdwise/features/sensors/data/repositories/sensor_repository.da
 import 'package:holdwise/features/sensors/data/services/local_database.dart';
 import 'package:holdwise/features/sensors/data/services/sensors_service.dart';
 import 'package:holdwise/features/sensors/data/services/background_services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'app/config/firebase_options.dart';
 
 Future<void> main() async {
@@ -28,6 +30,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await dotenv.load(fileName: ".env");
 
   // 2. Configure notification channel
   await _initializeNotifications();

@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    APIs.getSelfInfo();
+    ChatAPIs.getSelfInfo();
 
     //for updating user active status according to lifecycle events
     //resume -- active or online
@@ -40,12 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
     SystemChannels.lifecycle.setMessageHandler((message) {
       log('Message: $message');
 
-      if (APIs.auth.currentUser != null) {
+      if (ChatAPIs.auth.currentUser != null) {
         if (message.toString().contains('resume')) {
-          APIs.updateActiveStatus(true);
+          ChatAPIs.updateActiveStatus(true);
         }
         if (message.toString().contains('pause')) {
-          APIs.updateActiveStatus(false);
+          ChatAPIs.updateActiveStatus(false);
         }
       }
 
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => ProfileScreen(user: APIs.me)));
+                        builder: (_) => ProfileScreen(user: ChatAPIs.me)));
               },
               icon: const ProfileImage(size: 32),
             ),
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           //body
           body: StreamBuilder(
-            stream: APIs.getMyUsersId(),
+            stream: ChatAPIs.getMyUsersId(),
 
             //get id of only known users
             builder: (context, snapshot) {
@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 case ConnectionState.active:
                 case ConnectionState.done:
                   return StreamBuilder(
-                    stream: APIs.getAllUsers(
+                    stream: ChatAPIs.getAllUsers(
                         snapshot.data?.docs.map((e) => e.id).toList() ?? []),
 
                     //get only those user, who's ids are provided
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //hide alert dialog
                       Navigator.pop(context);
                       if (email.trim().isNotEmpty) {
-                        await APIs.addChatUser(email).then((value) {
+                        await ChatAPIs.addChatUser(email).then((value) {
                           if (!value) {
                             Dialogs.showSnackbar(
                                 context, 'User does not Exists!');

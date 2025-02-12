@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/features/appointments/data/models/appointment.dart';
 import 'package:holdwise/features/appointments/data/repositories/appointment_repository.dart';
@@ -66,8 +68,10 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   void fetchAppointments(String userId, {required bool isSpecialist}) {
     emit(state.copyWith(isLoading: true, error: null));
     _repository.streamAppointmentsForUser(userId: userId, isSpecialist: isSpecialist).listen((appointments) {
+      log('Appointments: $appointments');
       emit(state.copyWith(appointments: appointments, isLoading: false));
     }, onError: (error) {
+      log('Error ${error.toString()}', error: error);
       emit(state.copyWith(isLoading: false, error: error.toString()));
     });
   }

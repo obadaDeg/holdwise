@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/constants.dart';
+import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/app/utils/api_path.dart';
 import 'package:holdwise/common/services/firestore_services.dart';
@@ -10,7 +11,6 @@ import 'package:holdwise/common/widgets/role_based_side_navbar.dart';
 import 'package:holdwise/features/profile/presentation/pages/complete_profile_screen.dart';
 import 'package:holdwise/features/sensors/data/cubits/sensors_cubit.dart';
 import 'package:holdwise/features/sensors/presentation/widgets/violation_scatter_chart.dart';
-
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -21,7 +21,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final FirestoreServices firestoreServices = FirestoreServices.instance;
-  bool _profileChecked = false; // to avoid checking repeatedly
+  bool _profileChecked = false; // Prevents repeated checking
 
   @override
   void initState() {
@@ -29,62 +29,79 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _checkUserProfile();
   }
 
-  /// Check if the current user's Firestore document contains complete data.
+  /// Checks the current user's profile using the AuthCubit state.
   Future<void> _checkUserProfile() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
+    if (_profileChecked) return;
+    _profileChecked = true;
+
+    final authState = context.read<AuthCubit>().state;
+    if (authState is AuthAuthenticated) {
+      final user = authState.user;
+      bool profileIncomplete = false;
+
       try {
-        // Fetch the user's document from Firestore
-        final Map<String, dynamic> userData = await firestoreServices.getDocument(
+        // If display name is missing, update it using the user's email prefix.
+        if (user.displayName == null || user.displayName!.isEmpty) {
+          if (user.email != null && user.email!.isNotEmpty) {
+            await user.updateDisplayName(user.email!.split('@').first);
+          } else {
+            profileIncomplete = true;
+          }
+        }
+
+        // Instead of trying to update the phone number with an incomplete credential,
+        // mark the profile as incomplete if phone number is missing.
+        if (user.phoneNumber == null || user.phoneNumber!.isEmpty) {
+          profileIncomplete = true;
+        }
+
+        // Retrieve additional user data from Firestore.
+        final Map<String, dynamic> userData =
+            await firestoreServices.getDocument(
           path: ApiPath.user(user.uid),
           builder: (data, documentId) => data,
         );
 
+        // Check if any required fields from Firestore are missing.
         if (_isProfileIncomplete(userData)) {
-          // Use a post-frame callback to navigate so that it doesn't block the build
+          profileIncomplete = true;
+        }
+
+        // If any required profile information is missing, navigate to complete profile.
+        if (profileIncomplete) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(
-              context,
-              AppRoutes.completeProfile,              
-            );
+            Navigator.pushNamed(context, AppRoutes.completeProfile);
           });
         }
       } catch (e) {
-        // Optionally, handle errors or log them
-        debugPrint('Error fetching user data: $e');
+        debugPrint('Error checking user profile: $e');
       }
     }
   }
 
   /// Returns true if any required field is empty.
   bool _isProfileIncomplete(Map<String, dynamic> data) {
-    // Example: Check if 'name', 'phoneNumber', or 'about' are empty.
-    // Adjust the required fields as needed.
     final String name = data['name'] as String? ?? '';
     final String phoneNumber = data['phoneNumber'] as String? ?? '';
     final String about = data['about'] as String? ?? '';
-
-    return name.trim().isEmpty || phoneNumber.trim().isEmpty || about.trim().isEmpty;
+    return name.trim().isEmpty ||
+        phoneNumber.trim().isEmpty ||
+        about.trim().isEmpty;
   }
 
   @override
   Widget build(BuildContext context) {
-    // You can also show a loader if you want until _checkUserProfile finishes
     return Scaffold(
       appBar: const RoleBasedAppBar(title: 'Dashboard'),
-      // If you are using a side navigation drawer, you could include it here:
-      // drawer: const RoleBasedSideNavBar(),
       body: BlocBuilder<SensorCubit, SensorState>(
         builder: (context, state) {
-          // Get sensor data (example provided)
           final orientationLog = state.orientationLog;
           const double threshold = 70.0;
           final violations =
               orientationLog.where((o) => o.tiltAngle > threshold).toList();
 
-          final currentOrientation = orientationLog.isNotEmpty
-              ? orientationLog.last
-              : null;
+          final currentOrientation =
+              orientationLog.isNotEmpty ? orientationLog.last : null;
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -95,7 +112,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Statistics cards
                       Expanded(
                         flex: 2,
                         child: ListView(
@@ -127,7 +143,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      // Chart card
                       Expanded(
                         flex: 3,
                         child: Padding(
@@ -217,18 +232,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     value,
                     style: TextStyle(
-                      fontSize: 20,
-                      color: color,
-                      fontWeight: FontWeight.w600,
-                    ),
+                        fontSize: 20,
+                        color: color,
+                        fontWeight: FontWeight.w600),
                   ),
                 ],
               ),

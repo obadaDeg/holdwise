@@ -41,7 +41,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                     builder: (_) => ChatScreen(user: widget.user)));
           },
           child: StreamBuilder(
-            stream: APIs.getLastMessage(widget.user),
+            stream: ChatAPIs.getLastMessage(widget.user),
             builder: (context, snapshot) {
               final data = snapshot.data?.docs;
               final list =
@@ -76,7 +76,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 trailing: _message == null
                     ? null //show nothing when no message is sent
                     : _message!.read.isEmpty &&
-                            _message!.fromId != APIs.user.uid
+                            _message!.fromId != ChatAPIs.user.uid
                         ?
                         //show for unread message
                         const SizedBox(

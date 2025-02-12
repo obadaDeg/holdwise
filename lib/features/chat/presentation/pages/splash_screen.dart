@@ -25,13 +25,13 @@ class _SplashScreenState extends State<SplashScreen> {
           systemNavigationBarColor: Colors.white,
           statusBarColor: Colors.white));
 
-      log('\nUser: ${APIs.auth.currentUser}');
+      log('\nUser: ${ChatAPIs.auth.currentUser}');
 
       //navigate
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => APIs.auth.currentUser != null
+            builder: (_) => ChatAPIs.auth.currentUser != null
                 ? const HomeScreen()
                 : Scaffold(body: const Text('Login')),
           ));

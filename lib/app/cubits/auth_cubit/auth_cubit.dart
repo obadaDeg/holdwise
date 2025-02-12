@@ -129,19 +129,19 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthError("Token not found"));
         return;
       }
-
-      await http.post(
-        Uri.parse('http://localhost:5000/updateProfile'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'uid': user.uid,
-          'name': name,
-          'phoneNumber': phoneNumber,
-          'about': about,
-        }),
-      );
+      
+      // await http.post(
+      //   Uri.parse('http://localhost:5000/updateProfile'),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: jsonEncode({
+      //     'uid': user.uid,
+      //     'name': name,
+      //     'phoneNumber': phoneNumber,
+      //     'about': about,
+      //   }),
+      // );
 
       emit(AuthSuccess("Profile updated successfully."));
       emit(AuthAuthenticated(user, token, role: AppRoles.patient));
@@ -317,6 +317,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       debugPrint('Google Sign-in initiated...');
+      await googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       debugPrint('Google Sign-in completed...');
       if (googleUser == null) {
@@ -335,7 +336,28 @@ class AuthCubit extends Cubit<AuthState> {
           await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
       print('User is $user');
+
       if (user != null) {
+        final claims = await user.getIdTokenResult();
+        final about = claims.claims!['about'] ?? '';
+
+        final userData = UserData(
+          uid: user.uid,
+          email: user.email ?? '',
+          photoURL: user.photoURL ?? '',
+          name: user.displayName ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+          about: about ?? '',
+          createdAt: DateTime.now().toIso8601String(),
+          isOnline: true,
+          lastActive: DateTime.now().toIso8601String(),
+          pushToken: '',
+        );
+        await firestoreServices.setData(
+          path: ApiPath.user(userData.uid),
+          data: userData.toMap(),
+        );
+
         final token = await user.getIdToken();
         print('Token is $token');
         emit(AuthAuthenticated(user, token!, role: AppRoles.patient));
@@ -369,6 +391,38 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError('Google Signup failed, please try again.'));
     }
   }
+
+  Future<void> signInWithGoogle() async {
+  emit(AuthLoading());
+  try {
+    await GoogleSignIn().signOut();
+
+    // Attempt to sign in with Google
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      emit(AuthError('Google Sign-in cancelled.'));
+      return;
+    }
+
+    // Get the authentication details from the Google user
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    // Create a credential for Firebase authentication
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Sign in to Firebase with the credential
+    final UserCredential userCredential =
+        await _auth.signInWithCredential(credential);
+
+    emit(AuthSuccess('Google Sign-in successful!'));
+    _validateToken(userCredential.user!);
+  } catch (e) {
+    emit(AuthError('Google Sign-in failed: ${e.toString()}'));
+  }
+}
 
 // Phone Signup
   Future<void> phoneSignup(

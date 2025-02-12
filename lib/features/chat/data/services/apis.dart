@@ -6,12 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/features/chat/data/models/chat_user.dart';
 import 'package:holdwise/features/chat/data/models/message.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
-
-class APIs {
+class ChatAPIs {
   // for authentication
   static FirebaseAuth get auth => FirebaseAuth.instance;
 
@@ -61,6 +61,28 @@ class APIs {
     // });
   }
 
+  static Future<void> sendOpenAiRequest(String prompt) async {
+    final apiKey = APIKeys.OPENAI_API_KEY;
+    try {
+      final response = await http.post(
+        Uri.parse('https://api.openai.com/v1/engines/davinci/completions'),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'prompt': prompt,
+          'max_tokens': 100,
+        }),
+      );
+      log('Response: ${response.body}');
+    } catch (e) {
+      log('Error: $e');
+    }
+  }
+
+
+
   // for sending push notification (Updated Codes)
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
@@ -76,7 +98,7 @@ class APIs {
       };
 
       // Firebase Project > Project Settings > General Tab > Project ID
-      const projectID = 'we-chat-75f13';
+      const projectID = 'holdwise-2397a';
 
       // get firebase admin token
       FirebaseAuth auth = FirebaseAuth.instance;
@@ -87,7 +109,7 @@ class APIs {
       // handle null token
       if (bearerToken == null) return;
 
-      var res = await post(
+      var res = await http.post(
         Uri.parse(
             'https://fcm.googleapis.com/v1/projects/$projectID/messages:send'),
         headers: {
@@ -146,7 +168,7 @@ class APIs {
         await getFirebaseMessagingToken();
 
         //for setting user status to active
-        APIs.updateActiveStatus(true);
+        ChatAPIs.updateActiveStatus(true);
         log('My Data: ${user.data()}');
       } else {
         await createUser().then((value) => getSelfInfo());

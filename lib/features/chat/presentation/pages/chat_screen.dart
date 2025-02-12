@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: StreamBuilder(
-                    stream: APIs.getAllMessages(widget.user),
+                    stream: ChatAPIs.getAllMessages(widget.user),
                     builder: (context, snapshot) {
                       switch (snapshot.connectionState) {
                         //if data is loading
@@ -161,7 +161,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     builder: (_) => ViewProfileScreen(user: widget.user)));
           },
           child: StreamBuilder(
-              stream: APIs.getUserInfo(widget.user),
+              stream: ChatAPIs.getUserInfo(widget.user),
               builder: (context, snapshot) {
                 final data = snapshot.data?.docs;
                 final list =
@@ -272,7 +272,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         for (var i in images) {
                           log('Image Path: ${i.path}');
                           setState(() => _isUploading = true);
-                          await APIs.sendChatImage(widget.user, File(i.path));
+                          await ChatAPIs.sendChatImage(widget.user, File(i.path));
                           setState(() => _isUploading = false);
                         }
                       },
@@ -291,7 +291,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           log('Image Path: ${image.path}');
                           setState(() => _isUploading = true);
 
-                          await APIs.sendChatImage(
+                          await ChatAPIs.sendChatImage(
                               widget.user, File(image.path));
                           setState(() => _isUploading = false);
                         }
@@ -312,11 +312,11 @@ class _ChatScreenState extends State<ChatScreen> {
               if (_textController.text.isNotEmpty) {
                 if (_list.isEmpty) {
                   //on first message (add user to my_user collection of chat user)
-                  APIs.sendFirstMessage(
+                  ChatAPIs.sendFirstMessage(
                       widget.user, _textController.text, Type.text);
                 } else {
                   //simply send message
-                  APIs.sendMessage(
+                  ChatAPIs.sendMessage(
                       widget.user, _textController.text, Type.text);
                 }
                 _textController.text = '';

@@ -68,6 +68,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     final appointment = Appointment(
       id: '', // The repository will assign a proper ID.
       patientId: currentUser.uid,
+      patientName: currentUser.displayName ?? 'Unknown',
       specialistId: _selectedSpecialistId!,
       appointmentTime: appointmentDateTime,
       status: AppointmentStatus.pending,

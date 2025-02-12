@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdwise/common/widgets/role_based_appbar.dart';
 import 'package:holdwise/features/appointments/data/cubits/appointment_cubit.dart';
 import 'package:holdwise/features/appointments/data/models/appointment.dart';
 
@@ -67,9 +68,7 @@ class AppointmentDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appointment Details'),
-      ),
+      appBar: RoleBasedAppBar(title: 'Appointment Details', displayActions: false,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
