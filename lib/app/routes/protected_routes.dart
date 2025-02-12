@@ -124,7 +124,7 @@ class ProtectedRoute extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
-                'assets/icons/not_authenticated.png',
+                'assets/icons/not_authinticated.png',
                 height: 150,
                 width: 150,
               ),

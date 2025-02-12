@@ -1,29 +1,87 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/constants.dart';
+import 'package:holdwise/app/routes/routes.dart';
+import 'package:holdwise/app/utils/api_path.dart';
+import 'package:holdwise/common/services/firestore_services.dart';
 import 'package:holdwise/common/widgets/role_based_appbar.dart';
 import 'package:holdwise/common/widgets/role_based_side_navbar.dart';
+import 'package:holdwise/features/profile/presentation/pages/complete_profile_screen.dart';
 import 'package:holdwise/features/sensors/data/cubits/sensors_cubit.dart';
 import 'package:holdwise/features/sensors/presentation/widgets/violation_scatter_chart.dart';
 
-class DashboardScreen extends StatelessWidget {
+
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final FirestoreServices firestoreServices = FirestoreServices.instance;
+  bool _profileChecked = false; // to avoid checking repeatedly
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserProfile();
+  }
+
+  /// Check if the current user's Firestore document contains complete data.
+  Future<void> _checkUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        // Fetch the user's document from Firestore
+        final Map<String, dynamic> userData = await firestoreServices.getDocument(
+          path: ApiPath.user(user.uid),
+          builder: (data, documentId) => data,
+        );
+
+        if (_isProfileIncomplete(userData)) {
+          // Use a post-frame callback to navigate so that it doesn't block the build
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacementNamed(
+              context,
+              AppRoutes.completeProfile,              
+            );
+          });
+        }
+      } catch (e) {
+        // Optionally, handle errors or log them
+        debugPrint('Error fetching user data: $e');
+      }
+    }
+  }
+
+  /// Returns true if any required field is empty.
+  bool _isProfileIncomplete(Map<String, dynamic> data) {
+    // Example: Check if 'name', 'phoneNumber', or 'about' are empty.
+    // Adjust the required fields as needed.
+    final String name = data['name'] as String? ?? '';
+    final String phoneNumber = data['phoneNumber'] as String? ?? '';
+    final String about = data['about'] as String? ?? '';
+
+    return name.trim().isEmpty || phoneNumber.trim().isEmpty || about.trim().isEmpty;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // You can also show a loader if you want until _checkUserProfile finishes
     return Scaffold(
-      // Use a role-based app bar for a consistent header
       appBar: const RoleBasedAppBar(title: 'Dashboard'),
-      // Provide a side navigation drawer (for mobile or as needed)
+      // If you are using a side navigation drawer, you could include it here:
+      // drawer: const RoleBasedSideNavBar(),
       body: BlocBuilder<SensorCubit, SensorState>(
         builder: (context, state) {
-          // Get the orientation log and filter for violations
+          // Get sensor data (example provided)
           final orientationLog = state.orientationLog;
           const double threshold = 70.0;
           final violations =
               orientationLog.where((o) => o.tiltAngle > threshold).toList();
 
-          // Get current orientation if available
           final currentOrientation = orientationLog.isNotEmpty
               ? orientationLog.last
               : null;
@@ -32,8 +90,8 @@ class DashboardScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                // Desktop/tablet layout: show cards and chart side-by-side
                 if (constraints.maxWidth > 800) {
+                  // Desktop/tablet layout: side-by-side layout
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -85,7 +143,7 @@ class DashboardScreen extends StatelessWidget {
                     ],
                   );
                 } else {
-                  // Mobile layout: show cards and chart in a column
+                  // Mobile layout: vertical column layout
                   return SingleChildScrollView(
                     child: Column(
                       children: [
@@ -130,7 +188,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  /// A helper widget to build a nicely styled stat card.
+  /// Helper widget to build a styled statistic card.
   Widget _buildStatCard({
     required String title,
     required String value,

@@ -48,4 +48,7 @@ class AppRoutes {
   static const String privacy = '/privacy';
   static const String onboarding = '/onboarding';
   static const String sensors = '/sensors';
+  static const String phoneUsageAnalytics = '/phone-usage-analytics';
+  static const String addNewPost = '/add-new-post';
+  static const String completeProfile = '/complete-profile';
 }

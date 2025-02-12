@@ -23,11 +23,21 @@ class AuthServices {
         email: email, password: password);
     if (userCredential.user != null) {
       final user = userCredential.user;
+      // load about from claims
+      final claims = await user!.getIdTokenResult();
+      final about = claims.claims!['about'] ?? '';
+      
       final userData = UserData(
         uid: user!.uid,
-        email: user.email!,
-        photoURL: user.photoURL,
-        name: user.displayName,
+        email: user.email ?? '',
+        photoURL: user.photoURL ?? '',
+        name: user.displayName ?? '',
+        about: about ?? '',
+        createdAt: DateTime.now().toIso8601String(),
+        isOnline: true,
+        lastActive: DateTime.now().toIso8601String(),
+        pushToken: '',        
+        phoneNumber: user.phoneNumber ?? '',
       );
       await firestoreServices.setData(
         path: ApiPath.user(userData.uid),

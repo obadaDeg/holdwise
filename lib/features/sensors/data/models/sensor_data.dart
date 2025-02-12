@@ -16,10 +16,10 @@ class SensorData {
   factory SensorData.fromMap(Map<String, dynamic> map) {
     return SensorData(
       type: map['type'],
-      timestamp: map['timestamp'],
-      x: map['x'],
-      y: map['y'],
-      z: map['z'],
+      timestamp: map['timestamp'] as int,
+      x: map['x'] as double,
+      y: map['y'] as double,
+      z: map['z'] as double,
     );
   }
 

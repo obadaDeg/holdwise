@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import 'package:holdwise/features/notifications/data/cubits/notification_cubit.d
 import 'package:holdwise/features/sensors/data/cubits/sensors_cubit.dart';
 import 'package:holdwise/features/sensors/data/models/orientation_data.dart';
 import 'package:holdwise/features/sensors/data/models/sensor_data.dart';
+import 'package:holdwise/features/sensors/data/repositories/sensor_repository.dart';
+import 'package:holdwise/features/sensors/data/services/local_database.dart';
 import 'package:holdwise/features/sensors/data/services/sensors_service.dart';
 import 'package:holdwise/features/sensors/data/services/background_services.dart';
 import 'app/config/firebase_options.dart';
@@ -32,16 +36,28 @@ Future<void> main() async {
   await initializeBackgroundService();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // 4. Create sensor service & cubits (single instances)
+  // 4. Create local database instance.
+  // Make sure your generated file 'local_database.g.dart' exists
+  final localDatabase = LocalDatabase();
+
+  // 5. Create the sensor repository using the local database.
+  final sensorRepository = SensorRepository(localDatabase);
+
+  // 6. Create sensor service & cubits (single instances)
   final sensorService = HoldWiseSensorService();
   final notificationsCubit = NotificationsCubit();
-  final sensorCubit = SensorCubit(sensorService, notificationsCubit: notificationsCubit);
+  final sensorCubit = SensorCubit(
+    sensorService,
+    notificationsCubit: notificationsCubit,
+    sensorRepository: sensorRepository,
+  );
 
-  // 5. Listen for background service updates
+  // 7. Listen for background service updates.
   FlutterBackgroundService().on("update").listen((event) {
     if (event != null) {
       if (event.containsKey("sensorData")) {
         final sensorData = SensorData.fromMap(event["sensorData"]);
+        log(sensorData.toString());
         sensorCubit.updateSensorData(sensorData);
       }
       if (event.containsKey("orientation")) {
@@ -62,7 +78,6 @@ Future<void> main() async {
       providers: [
         BlocProvider.value(value: sensorCubit),
         BlocProvider.value(value: notificationsCubit),
-        // You can also provide your AuthCubit, ThemeCubit, etc. here if desired.
       ],
       child: const HoldWiseApp(),
     ),
@@ -82,6 +97,7 @@ Future<void> _initializeNotifications() async {
   );
   debugPrint('Notification Channel Result: $result');
 }
+
 
 // class MyApp extends StatelessWidget {
 //   const MyApp({Key? key}) : super(key: key);

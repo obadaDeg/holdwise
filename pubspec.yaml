@@ -75,9 +75,14 @@ dependencies:
   connectivity_plus: ^6.1.2
   flutter_local_notifications: ^18.0.1
   ambient_light: ^0.1.2
+  drift: ^2.25.0
+  drift_flutter: ^0.2.4
+  sqlite3_flutter_libs: ^0.5.30
   
 
 dev_dependencies:
+  # drift_dev: ^2.25.0
+  # build_runner: ^2.1.4
   flutter_test:
     sdk: flutter
 
@@ -87,6 +92,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  drift_dev: ^2.25.1
+  build_runner: ^2.4.15
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -95,6 +102,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/icons/
+    - assets/icons/not_authinticated.png
     - assets/models/pose_classification_model.tflite
     - assets/models/pose_landmarker_lite.task
     - assets/models/pose_landmark_full.tflite

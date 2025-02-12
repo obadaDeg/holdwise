@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/utils/api_path.dart';
+import 'package:holdwise/features/auth/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -74,7 +76,8 @@ class AuthCubit extends Cubit<AuthState> {
 
       // Emit authenticated state based on the role
       final role = idTokenResult.claims?['role'] ?? AppRoles.patient;
-      emit(AuthAuthenticated(user, idTokenResult.token!, role: AppRoles.specialist));
+      emit(AuthAuthenticated(user, idTokenResult.token!,
+          role: AppRoles.specialist));
       // emit(AuthAuthenticated(user, idTokenResult.token!, role: role));
     } catch (e) {
       debugPrint('Token validation failed: ${e.toString()}');
@@ -111,6 +114,42 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> updateProfile(
+      String name, String phoneNumber, String about) async {
+    emit(AuthLoading());
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        emit(AuthError("User not found"));
+        return;
+      }
+
+      final token = await user.getIdToken();
+      if (token == null) {
+        emit(AuthError("Token not found"));
+        return;
+      }
+
+      await http.post(
+        Uri.parse('http://localhost:5000/updateProfile'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'uid': user.uid,
+          'name': name,
+          'phoneNumber': phoneNumber,
+          'about': about,
+        }),
+      );
+
+      emit(AuthSuccess("Profile updated successfully."));
+      emit(AuthAuthenticated(user, token, role: AppRoles.patient));
+    } catch (e) {
+      emit(AuthError("Error updating profile: ${e.toString()}"));
+    }
+  }
+
   // Login Method
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -126,6 +165,8 @@ class AuthCubit extends Cubit<AuthState> {
         final role = idTokenResult.claims?['role'] ?? AppRoles.patient;
         final lastSignInTime = user.metadata.lastSignInTime;
         final creationTime = user.metadata.creationTime;
+
+        // if user data is not assigned, fetch them from user collection for the specific id
 
         // Update metadata in Firestore
         await firestoreServices.setData(
@@ -166,19 +207,24 @@ class AuthCubit extends Cubit<AuthState> {
         // Send email verification
         await user.sendEmailVerification();
 
-        // Save metadata to Firestore
-        final creationTime = user.metadata.creationTime;
-        await firestoreServices.setData(
-          path: ApiPath.user(user.uid),
-          data: {
-            'uid': user.uid,
-            'displayName': user.displayName,
-            'role': AppRoles.patient,
-            'email': user.email,
-            'creationTime': creationTime?.toIso8601String(),
-            'lastSignInTime': null,
+        final claims = await user!.getIdTokenResult();
+        final about = claims.claims!['about'] ?? '';
 
-          },
+        final userData = UserData(
+          uid: user!.uid,
+          email: user.email ?? '',
+          photoURL: user.photoURL ?? '',
+          name: user.displayName ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+          about: about ?? '',
+          createdAt: DateTime.now().toIso8601String(),
+          isOnline: true,
+          lastActive: DateTime.now().toIso8601String(),
+          pushToken: '',
+        );
+        await firestoreServices.setData(
+          path: ApiPath.user(userData.uid),
+          data: userData.toMap(),
         );
 
         emit(AuthSuccess('Signup successful! Please verify your email.'));

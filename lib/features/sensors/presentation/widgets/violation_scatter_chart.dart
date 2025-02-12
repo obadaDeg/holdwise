@@ -65,6 +65,7 @@ class _ViolationScatterChartState extends State<ViolationScatterChart> {
               dt.day == widget.referenceDate.day) {
             key = "${dt.hour}-${dt.minute}";
           }
+          
           break;
         case ViolationFilter.week:
           // Only include violations in the week of the reference date.

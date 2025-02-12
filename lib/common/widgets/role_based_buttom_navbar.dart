@@ -23,7 +23,10 @@ import 'package:holdwise/app/config/colors.dart';
 import 'package:holdwise/app/config/constants.dart';
 
 class RoleBasedNavBar extends StatelessWidget {
-  const RoleBasedNavBar({Key? key}) : super(key: key);
+  final initialPage;
+  const RoleBasedNavBar({
+    Key? key, this.initialPage = 0,
+  }) : super(key: key);
 
   ItemConfig _buildNavItem({
     required IconData icon,

@@ -7,6 +7,11 @@ class RoleBasedNavItems {
   static List<Map<String, dynamic>> _getSharedDrawerItems(BuildContext context) {
     return [
       {
+        'icon': Icons.analytics,
+        'label': 'Phone Usage Analytics',
+        'onTap': () => Navigator.pushNamed(context, AppRoutes.phoneUsageAnalytics),
+      },
+      {
         'icon': Icons.settings,
         'label': 'Settings',
         'onTap': () => Navigator.pushNamed(context, AppRoutes.profileSettings),
@@ -75,6 +80,11 @@ class RoleBasedNavItems {
             'icon': Icons.schedule,
             'label': 'Schedule',
             'onTap': () => Navigator.pushNamed(context, AppRoutes.schedule),
+          },
+          {
+            'icon': Icons.add,
+            'label': 'camera',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.addNewPost),
           },
           {
             'icon': Icons.people,

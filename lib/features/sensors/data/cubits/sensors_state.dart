@@ -1,9 +1,13 @@
+// sensors_state.dart
 part of 'sensors_cubit.dart';
-
 class SensorState extends Equatable {
-  final List<SensorData> sensorData;     // Current in-memory data
-  final List<OrientationData> orientationLog;    // Current orientation
-  final OrientationData? currentOrientation;     // Last known orientation
+  /// A list of recent raw sensor data (may be used for immediate UI feedback).
+  final List<SensorData> sensorData;
+  /// Log of orientation events.
+  final List<OrientationData> orientationLog;
+  /// The last known orientation event.
+  final OrientationData? currentOrientation;
+  /// A running total of posture violations (could also be reset after aggregation).
   final int postureViolations;
 
   const SensorState({

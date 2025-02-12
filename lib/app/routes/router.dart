@@ -16,10 +16,12 @@ import 'package:holdwise/features/chat/presentation/pages/home_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/about_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/notifications/presentation/pages/notification_screen.dart';
+import 'package:holdwise/features/profile/presentation/pages/complete_profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/profile/presentation/pages/settings_screen_dialog.dart';
 import 'package:holdwise/features/appointments/presentation/pages/specialist_appointments_page.dart';
 import 'package:holdwise/features/records/presentation/pages/personal_records.dart';
+import 'package:holdwise/features/records/presentation/pages/report_screen.dart';
 import 'package:holdwise/features/subscription/presentation/pages/subscription.dart';
 
 class AppRouter {
@@ -75,12 +77,15 @@ class AppRouter {
         );
 
       case AppRoutes.dashboard:
+        final initialPage = settings.arguments as int?;
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
             isAdmin: true,
             isPatient: true,
             isSpecialist: true,
-            child: RoleBasedNavBar(),
+            child: RoleBasedNavBar(
+              initialPage: initialPage,
+            ),
           ),
         );
 
@@ -242,6 +247,41 @@ class AppRouter {
             child: PersonalRecords(),
           ),
         );
+
+      case AppRoutes.phoneUsageAnalytics:
+        return CupertinoPageRoute(builder: 
+          (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: ReportScreen()
+          ),
+        );
+
+      case AppRoutes.addNewPost:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: false,
+            isSpecialist: true,
+            child: Scaffold(
+              body: Center(
+                child: Text('Add New Post Screen'),
+              ),
+            ),
+          ),
+        );
+
+      case AppRoutes.completeProfile:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: CompleteProfileScreen(),
+          ),
+        );
+
 
       case AppRoutes.about:
         return CupertinoPageRoute(
