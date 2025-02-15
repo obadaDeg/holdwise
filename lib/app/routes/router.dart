@@ -1,18 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/routes/protected_routes.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/widgets/role_based_buttom_navbar.dart';
+import 'package:holdwise/features/appointments/data/cubits/appointment_cubit.dart';
+import 'package:holdwise/features/appointments/data/models/appointment.dart';
+import 'package:holdwise/features/appointments/presentation/pages/appointment_details_page.dart';
 import 'package:holdwise/features/appointments/presentation/pages/appointments_screen.dart';
 import 'package:holdwise/features/auth/presentation/pages/auth_page.dart';
 import 'package:holdwise/features/auth/presentation/widgets/forgot_password_email_input_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/login_form.dart';
 import 'package:holdwise/features/auth/presentation/widgets/otp_card.dart';
 import 'package:holdwise/features/auth/presentation/widgets/signup_form.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/presentation/pages/chat_screen.dart';
-import 'package:holdwise/features/chat/presentation/pages/home_screen.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/presentation/pages/chat_screen.dart';
+import 'package:holdwise/features/chat_temp/presentation/pages/home_screen.dart';
+import 'package:holdwise/features/explore_screen/data/upload_cubit/advice_upload_cubit.dart';
+import 'package:holdwise/features/explore_screen/presentation/pages/add_new_post_screen.dart';
+import 'package:holdwise/features/explore_screen/presentation/pages/explore_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/about_screen.dart';
 import 'package:holdwise/features/info/presentation/pages/help_screen.dart';
 import 'package:holdwise/features/notifications/presentation/pages/notification_screen.dart';
@@ -238,6 +245,27 @@ class AppRouter {
           );
         }
 
+      case AppRoutes.appointmentDetails:
+        final args = settings.arguments as Map<String, dynamic>;
+        final appointment = args['appointment'] as Appointment;
+        final appointmentCubit = args['appointmentCubit'] as AppointmentCubit;
+        return CupertinoPageRoute(
+          builder: (context) {
+            return ProtectedRoute(
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: BlocProvider.value(
+                value: appointmentCubit,
+                child: AppointmentDetailsPage(
+                  appointment: appointment,
+                  isSpecialist: true,
+                ),
+              ),
+            );
+          },
+        );
+
       case AppRoutes.personalRecords:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
@@ -249,27 +277,24 @@ class AppRouter {
         );
 
       case AppRoutes.phoneUsageAnalytics:
-        return CupertinoPageRoute(builder: 
-          (_) => ProtectedRoute(
-            isAdmin: true,
-            isPatient: true,
-            isSpecialist: true,
-            child: ReportScreen()
-          ),
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+              isAdmin: true,
+              isPatient: true,
+              isSpecialist: true,
+              child: ReportScreen()),
         );
 
       case AppRoutes.addNewPost:
         return CupertinoPageRoute(
           builder: (_) => ProtectedRoute(
-            isAdmin: true,
-            isPatient: false,
-            isSpecialist: true,
-            child: Scaffold(
-              body: Center(
-                child: Text('Add New Post Screen'),
-              ),
-            ),
-          ),
+              isAdmin: true,
+              isPatient: false,
+              isSpecialist: true,
+              child: BlocProvider(
+                create: (context) => AdviceUploadCubit(),
+                child: AddSpecialistAdviceScreen(),
+              )),
         );
 
       case AppRoutes.completeProfile:
@@ -282,6 +307,15 @@ class AppRouter {
           ),
         );
 
+      case AppRoutes.posts:
+        return CupertinoPageRoute(
+          builder: (_) => ProtectedRoute(
+            isAdmin: true,
+            isPatient: true,
+            isSpecialist: true,
+            child: ExplorePage(),
+          ),
+        );
 
       case AppRoutes.about:
         return CupertinoPageRoute(

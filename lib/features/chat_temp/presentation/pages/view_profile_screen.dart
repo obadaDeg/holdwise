@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:holdwise/features/chat/data/helpers/my_date_util.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/presentation/widgets/profile_image.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/my_date_util.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/profile_image.dart';
 
 
 //view profile screen -- to view profile of user

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:holdwise/features/chat/data/services/apis.dart';
+import 'package:holdwise/features/chat_temp/data/services/apis.dart';
 
 class ProfileImage extends StatelessWidget {
   final double size;

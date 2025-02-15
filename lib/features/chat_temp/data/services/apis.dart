@@ -7,8 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:holdwise/app/config/constants.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/data/models/message.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/data/models/message.dart';
 import 'package:http/http.dart' as http;
 
 class ChatAPIs {

@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:holdwise/features/chat/data/helpers/dialogs.dart';
-import 'package:holdwise/features/chat/presentation/widgets/chat_user_card.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/dialogs.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/chat_user_card.dart';
 import 'package:lottie/lottie.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/data/services/apis.dart';
-import 'package:holdwise/features/chat/presentation/widgets/profile_image.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/data/services/apis.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/profile_image.dart';
 import 'ai_screen.dart';
 import 'profile_screen.dart';
 

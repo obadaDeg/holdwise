@@ -166,8 +166,6 @@ class AuthCubit extends Cubit<AuthState> {
         final lastSignInTime = user.metadata.lastSignInTime;
         final creationTime = user.metadata.creationTime;
 
-        // if user data is not assigned, fetch them from user collection for the specific id
-
         // Update metadata in Firestore
         await firestoreServices.setData(
           path: ApiPath.user(user.uid),

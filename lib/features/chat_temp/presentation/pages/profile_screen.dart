@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/features/auth/presentation/pages/auth_page.dart';
-import 'package:holdwise/features/chat/data/helpers/dialogs.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/data/services/apis.dart';
-import 'package:holdwise/features/chat/presentation/widgets/profile_image.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/dialogs.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/data/services/apis.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/profile_image.dart';
 import 'package:image_picker/image_picker.dart';
 
 

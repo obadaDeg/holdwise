@@ -4,7 +4,7 @@ import 'package:holdwise/common/widgets/error_dialog.dart';
 import 'package:holdwise/common/widgets/role_based_appbar.dart';
 import 'package:holdwise/features/explore_screen/data/models/advice.dart';
 import 'package:holdwise/features/explore_screen/data/models/article.dart';
-import 'package:holdwise/features/explore_screen/explore_cubit/explore_cubit.dart';
+import 'package:holdwise/features/explore_screen/data/explore_cubit/explore_cubit.dart';
 import 'package:holdwise/features/explore_screen/presentation/widgets/advice_card.dart';
 import 'package:holdwise/features/explore_screen/presentation/widgets/article_card.dart';
 

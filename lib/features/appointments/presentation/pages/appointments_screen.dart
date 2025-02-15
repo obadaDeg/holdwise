@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/features/appointments/data/cubits/appointment_cubit.dart';
 import 'package:holdwise/features/appointments/data/cubits/appointment_state.dart';
 import 'package:holdwise/features/appointments/data/models/appointment.dart';
@@ -43,17 +44,10 @@ class PatientAppointmentsPage extends StatelessWidget {
                 subtitle: Text('${appointment.appointmentTime}'),
                 trailing: Text(appointment.status.toString().split('.').last),
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider.value(
-                        value: context.read<AppointmentCubit>(),
-                        child: AppointmentDetailsPage(
-                          appointment: appointment,
-                          isSpecialist: false,
-                        ),
-                      ),
-                    ),
+                    AppRoutes.appointmentDetails,
+                    arguments: appointment,
                   );
                 },
               );

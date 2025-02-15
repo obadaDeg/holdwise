@@ -79,6 +79,8 @@ dependencies:
   drift_flutter: ^0.2.4
   sqlite3_flutter_libs: ^0.5.30
   flutter_dotenv: ^5.2.1
+  video_player: ^2.9.2
+  encrypt: ^5.0.3
   
 
 dev_dependencies:

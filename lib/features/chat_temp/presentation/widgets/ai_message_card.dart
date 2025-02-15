@@ -1,4 +1,4 @@
-import 'package:holdwise/features/chat/data/models/message.dart';
+import 'package:holdwise/features/chat_temp/data/models/message.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'profile_image.dart';

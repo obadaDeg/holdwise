@@ -15,7 +15,9 @@ class RoleBasedDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final navItems = RoleBasedNavItems.getDrawerItems(role, context);
+    // final userId = context.watch<AuthCubit>().state as AuthAuthenticated).user.uid;
+    final userId = (context.watch<AuthCubit>().state as AuthAuthenticated).user.uid;
+    final navItems = RoleBasedNavItems.getDrawerItems(role, context, userId: userId);
     final themeMode = context.watch<ThemeCubit>().state;
     final isDarkMode = themeMode == ThemeMode.dark;
 

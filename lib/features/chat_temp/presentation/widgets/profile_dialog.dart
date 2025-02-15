@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/presentation/pages/view_profile_screen.dart';
-import 'package:holdwise/features/chat/presentation/widgets/profile_image.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/presentation/pages/view_profile_screen.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/profile_image.dart';
 
 class ProfileDialog extends StatelessWidget {
   const ProfileDialog({super.key, required this.user});

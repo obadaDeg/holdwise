@@ -1,6 +1,10 @@
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
+import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/common/widgets/role_based_appbar.dart';
 import 'package:holdwise/features/appointments/data/cubits/appointment_cubit.dart';
 import 'package:holdwise/features/appointments/data/cubits/appointment_state.dart';
@@ -8,7 +12,7 @@ import 'package:holdwise/features/appointments/data/models/appointment.dart';
 import 'package:holdwise/features/appointments/data/repositories/appointment_repository.dart';
 import 'package:holdwise/features/appointments/presentation/pages/appointment_details_page.dart';
 import 'package:holdwise/features/auth/data/models/user_model.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart';
 
 class SpecialistAppointmentsPage extends StatelessWidget {
   final String specialistId;
@@ -18,6 +22,8 @@ class SpecialistAppointmentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext outerContext) {
+    final isDarkMode = outerContext.read<ThemeCubit>().state == ThemeMode.dark;
+
     return BlocProvider(
       create: (context) => AppointmentCubit(repository: AppointmentRepository())
         ..fetchAppointments(specialistId, isSpecialist: true),
@@ -25,8 +31,8 @@ class SpecialistAppointmentsPage extends StatelessWidget {
         appBar: RoleBasedAppBar(title: 'Appointments'),
         body: Builder(
           builder: (context) {
-            // This context is now under the BlocProvider.
             return RefreshIndicator(
+              color: isDarkMode ? AppColors.primary300 : AppColors.primary500,
               onRefresh: () async {
                 // Now this context will correctly find the AppointmentCubit.
                 context
@@ -47,7 +53,9 @@ class SpecialistAppointmentsPage extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'Could not load appointments, try again.',
-                              style: TextStyle(color: Colors.redAccent),
+                              style: TextStyle(
+                                  color: AppColors.error,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -101,13 +109,14 @@ class SpecialistAppointmentsPage extends StatelessWidget {
                               Text(
                                 'Status: ${appointment.status.toString().split('.').last}',
                                 style: TextStyle(
+                                  fontSize: 20,
                                   color: appointment.status ==
                                           AppointmentStatus.confirmed
-                                      ? Colors.green
+                                      ? AppColors.success
                                       : appointment.status ==
                                               AppointmentStatus.pending
-                                          ? Colors.orange
-                                          : Colors.red,
+                                          ? AppColors.warning
+                                          : AppColors.error,
                                 ),
                               ),
                             ],
@@ -115,20 +124,22 @@ class SpecialistAppointmentsPage extends StatelessWidget {
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
-                            color: Theme.of(context).primaryColor,
+                            color: isDarkMode
+                                ? AppColors.white
+                                : AppColors.gray900,
                           ),
                           onTap: () {
-                            Navigator.push(
+                            // Capture the cubit from the current context
+                            final appointmentCubit =
+                                BlocProvider.of<AppointmentCubit>(context,
+                                    listen: false);
+                            Navigator.pushNamed(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider.value(
-                                  value: context.read<AppointmentCubit>(),
-                                  child: AppointmentDetailsPage(
-                                    appointment: appointment,
-                                    isSpecialist: true,
-                                  ),
-                                ),
-                              ),
+                              AppRoutes.appointmentDetails,
+                              arguments: {
+                                'appointment': appointment,
+                                'appointmentCubit': appointmentCubit,
+                              },
                             );
                           },
                         ),

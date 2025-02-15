@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/colors.dart';
@@ -38,7 +40,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       _nameController.text = user.displayName ?? "";
       _phoneNumberController.text = user.phoneNumber ?? "";
       try {
-        final Map<String, dynamic> userData = await FirestoreServices.instance.getDocument(
+        final Map<String, dynamic> userData =
+            await FirestoreServices.instance.getDocument(
           path: ApiPath.user(user.uid),
           builder: (data, documentId) => data,
         );
@@ -67,21 +70,17 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   /// Called when the user submits the form.
   bool _submitProfile() {
     if (_formKey.currentState!.validate()) {
-      // Pass along the (possibly updated) values.
       try {
-        context.read<AuthCubit>().updateProfile(
-            _nameController.text.trim(),
-            _phoneNumberController.text.trim(),
-            _aboutController.text.trim(),
-          );
-        // SnackBar(content: Text('Profile updated successfully!'));
+        // context.read<AuthCubit>().updateProfile(
+        //       _nameController.text.trim(),
+        //       _phoneNumberController.text.trim(),
+        //       _aboutController.text.trim(),
+        //     );
+        // If it works, the AuthCubit will emit AuthSuccess -> see the BlocConsumer listener
         return true;
       } catch (e) {
-        // SnackBar(content: Text('Could not update profile data! Please try again.'));
+        // Handle or log the error
         return false;
-      }
-      finally {
-        Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
       }
     }
     return false;
@@ -106,13 +105,12 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
           : BlocConsumer<AuthCubit, AuthState>(
               listener: (context, state) {
                 if (state is AuthSuccess) {
-                  // Show success message and navigate to Dashboard.
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.message)),
                   );
                   Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
                 } else if (state is AuthError) {
-                  // Show error message.
+                  // Show error message
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(state.message)),
                   );
@@ -206,7 +204,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                   missingFields.add(
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+                        // Navigator.pushReplacementNamed(
+                        //     context, AppRoutes.dashboard);
+                        Navigator.of(context).pop();
                       },
                       child: const Text("Go to Dashboard"),
                     ),

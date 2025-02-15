@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:holdwise/features/chat/data/helpers/dialogs.dart';
-import 'package:holdwise/features/chat/data/models/message.dart';
-import 'package:holdwise/features/chat/presentation/widgets/ai_message_card.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/dialogs.dart';
+import 'package:holdwise/features/chat_temp/data/models/message.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/ai_message_card.dart';
 
 class AiScreen extends StatefulWidget {
   const AiScreen({super.key});

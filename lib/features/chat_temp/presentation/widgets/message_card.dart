@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
-import 'package:holdwise/features/chat/data/helpers/dialogs.dart';
-import 'package:holdwise/features/chat/data/helpers/my_date_util.dart';
-import 'package:holdwise/features/chat/data/models/message.dart';
-import 'package:holdwise/features/chat/data/services/apis.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/dialogs.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/my_date_util.dart';
+import 'package:holdwise/features/chat_temp/data/models/message.dart';
+import 'package:holdwise/features/chat_temp/data/services/apis.dart';
 
 // for showing single message details
 class MessageCard extends StatefulWidget {

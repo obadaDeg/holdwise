@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:holdwise/app/config/constants.dart';
 import 'package:holdwise/app/routes/routes.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
 
 class RoleBasedActions {
   static Map<String, List<Widget>> getAppBarActions(String role, BuildContext context, User user) {
@@ -55,7 +55,7 @@ class RoleBasedActions {
             IconButton(
               icon: Icon(Icons.schedule),
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.appointments, arguments: user.uid);
+                Navigator.pushNamed(context, AppRoutes.specialistAppointments, arguments: user.uid);
               },
             ),
             IconButton(

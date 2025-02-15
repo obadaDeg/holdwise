@@ -22,7 +22,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final FirestoreServices firestoreServices = FirestoreServices.instance;
   bool _profileChecked = false; // Prevents repeated checking
-
+  int _howManyProfileChecked = 0;
   @override
   void initState() {
     super.initState();
@@ -70,6 +70,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // If any required profile information is missing, navigate to complete profile.
         if (profileIncomplete) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            if(!mounted) return;
+            if(_howManyProfileChecked > 0) return;
+            _howManyProfileChecked++;
             Navigator.pushNamed(context, AppRoutes.completeProfile);
           });
         }

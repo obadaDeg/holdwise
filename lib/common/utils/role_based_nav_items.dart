@@ -30,7 +30,7 @@ class RoleBasedNavItems {
   }
 
   /// Role-based drawer items
-  static List<Map<String, dynamic>> getDrawerItems(String role, BuildContext context) {
+  static List<Map<String, dynamic>> getDrawerItems(String role, BuildContext context, {String? userId}) {
     List<Map<String, dynamic>> roleSpecificItems = [];
 
     switch (role) {
@@ -78,12 +78,17 @@ class RoleBasedNavItems {
         roleSpecificItems = [
           {
             'icon': Icons.schedule,
-            'label': 'Schedule',
-            'onTap': () => Navigator.pushNamed(context, AppRoutes.schedule),
+            'label': 'Appointments',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.specialistAppointments, arguments: userId),
+          },
+          {
+            'icon': Icons.explore,
+            'label': 'Explore',
+            'onTap': () => Navigator.pushNamed(context, AppRoutes.posts),
           },
           {
             'icon': Icons.add,
-            'label': 'camera',
+            'label': 'Add New Post',
             'onTap': () => Navigator.pushNamed(context, AppRoutes.addNewPost),
           },
           {

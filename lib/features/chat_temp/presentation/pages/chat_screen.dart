@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:holdwise/features/chat/data/helpers/my_date_util.dart';
-import 'package:holdwise/features/chat/data/models/chat_user.dart';
-import 'package:holdwise/features/chat/data/models/message.dart';
-import 'package:holdwise/features/chat/data/services/apis.dart';
-import 'package:holdwise/features/chat/presentation/widgets/message_card.dart';
+import 'package:holdwise/features/chat_temp/data/helpers/my_date_util.dart';
+import 'package:holdwise/features/chat_temp/data/models/chat_user.dart';
+import 'package:holdwise/features/chat_temp/data/models/message.dart';
+import 'package:holdwise/features/chat_temp/data/services/apis.dart';
+import 'package:holdwise/features/chat_temp/presentation/widgets/message_card.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../widgets/profile_image.dart';
