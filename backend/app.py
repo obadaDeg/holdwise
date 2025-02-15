@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import firebase_admin
 from firebase_admin import auth, credentials
+from cryptography.fernet import Fernet
 
 app = Flask(__name__)
 
@@ -16,6 +17,11 @@ BASE_UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(BASE_UPLOAD_FOLDER):
     os.makedirs(BASE_UPLOAD_FOLDER)
 app.config["UPLOAD_FOLDER"] = BASE_UPLOAD_FOLDER
+
+# Setup Fernet encryption.
+# In production, set this key via an environment variable.
+FERNET_KEY = b'Ff6lqL9z6IZ_Qa1CDhPJxi0IcL4co8WXhw4Xn1Ytq9M='  # Must be 32 url-safe base64-encoded bytes.
+fernet = Fernet(FERNET_KEY)
 
 @app.route("/updateProfile", methods=["POST"])
 def update_profile():
@@ -56,7 +62,7 @@ def upload_file():
       - file: The file to upload.
       - uid: The Firebase user ID (used to organize files per specialist)
     
-    Returns a JSON response with a URL for retrieving the file.
+    Returns a JSON response with an encrypted token representing the file path.
     """
     if "file" not in request.files:
         return jsonify({"error": "No file part in the request"}), 400
@@ -66,10 +72,12 @@ def upload_file():
     if file.filename == "":
         return jsonify({"error": "No file selected"}), 400
 
+    # Retrieve the uid (or default to "anonymous").
     uid = request.form.get("uid", "anonymous")
     specialist_folder = os.path.join(app.config["UPLOAD_FOLDER"], uid)
     os.makedirs(specialist_folder, exist_ok=True)
 
+    # Create a unique filename using uid and a timestamp.
     timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     filename = f"{uid}_{timestamp}_{secure_filename(file.filename)}"
     file_path = os.path.join(specialist_folder, filename)
@@ -79,14 +87,27 @@ def upload_file():
     except Exception as e:
         return jsonify({"error": f"Failed to save file: {str(e)}"}), 500
 
-    file_url = f"{request.host_url}files/{uid}/{filename}"
-    return jsonify({"url": file_url}), 200
+    # Build the relative path (firepath) that identifies the file.
+    relative_path = f"{uid}/{filename}"
+    # Encrypt the relative file path.
+    encrypted_token = fernet.encrypt(relative_path.encode()).decode()
+    
+    # Return the encrypted token.
+    return jsonify({"encrypted_url": encrypted_token}), 200
 
-@app.route("/files/<uid>/<filename>", methods=["GET"])
-def get_file(uid, filename):
+@app.route("/file/<token>", methods=["GET"])
+def serve_encrypted_file(token):
     """
-    Serves the file stored on the server for a specific specialist.
+    Expects an encrypted token in the URL. Decrypts it to determine
+    the file's relative path and serves the file.
     """
+    try:
+        # Decrypt the token to retrieve the relative file path (e.g. "uid/filename").
+        decrypted = fernet.decrypt(token.encode()).decode()
+        uid, filename = decrypted.split('/', 1)
+    except Exception as e:
+        return jsonify({"error": f"Invalid token: {str(e)}"}), 400
+
     directory = os.path.join(app.config["UPLOAD_FOLDER"], uid)
     return send_from_directory(directory, filename)
 

@@ -55,6 +55,11 @@ class APIKeys {
   static String OPENAI_API_KEY = dotenv.env['OPENAI_API_KEY'] ?? 'No API Key Found';
 }
 
+class APIs {
+  static const String openaiApiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
+  static String baseServerUrl = dotenv.env['BASE_SERVER_URL'] ?? 'http://localhost:5000';
+}
+
 class Constants {
   static const double borderRadius = 8.0;
   static const double backgroundWhiteAlpha = 0.95;
