@@ -235,6 +235,8 @@ class SensorCubit extends Cubit<SensorState> {
     notificationsCubit.addNotification(newNotification);
   }
 
+  
+
   @override
   Future<void> close() {
     _aggregateTimer?.cancel();

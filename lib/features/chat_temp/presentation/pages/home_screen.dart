@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           //app bar
           appBar: AppBar(
-            //view profile
+            
             leading: IconButton(
               tooltip: 'View Profile',
               onPressed: () {
@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 });
                           } else {
                             return const Center(
-                              child: Text('No Connections Found!',
+                              child: Text('No Chat Found!',
                                   style: TextStyle(fontSize: 20)),
                             );
                           }

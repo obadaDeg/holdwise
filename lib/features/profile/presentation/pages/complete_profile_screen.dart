@@ -7,6 +7,7 @@ import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/app/routes/routes.dart';
 import 'package:holdwise/app/utils/api_path.dart';
 import 'package:holdwise/common/services/firestore_services.dart';
+import 'package:holdwise/common/widgets/role_based_appbar.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({Key? key}) : super(key: key);
@@ -97,9 +98,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Complete Your Profile"),
-      ),
+      appBar: RoleBasedAppBar(title: 'Complete Your Profile', displayActions: false),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : BlocConsumer<AuthCubit, AuthState>(

@@ -13,6 +13,7 @@ class HoldWiseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      
       providers: [
         // Only provide additional cubits that haven't been provided at the root.
         BlocProvider(
@@ -34,6 +35,7 @@ class HoldWiseApp extends StatelessWidget {
           return BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               return MaterialApp(
+                debugShowCheckedModeBanner: false,
                 title: 'HoldWise',
                 theme: AppTheme.lightTheme(context),
                 darkTheme: AppTheme.darkTheme(context),

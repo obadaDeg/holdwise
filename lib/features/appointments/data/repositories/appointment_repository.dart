@@ -38,6 +38,17 @@ class AppointmentRepository {
     await _appointments.doc(appointmentId).delete();
   }
 
+  Future<String?> getSpecialistName(String specialistId) async {
+    final specialist = await firestore.collection('specialists').doc(specialistId).get();
+
+    final data = specialist.data();
+
+    log('data: $data');
+    final displayName = data?['displayName'];
+    
+    return specialist.exists ? displayName : null;
+  }
+
   /// Stream appointments for a specific user.
   Stream<List<Appointment>> streamAppointmentsForUser({
     required String userId,

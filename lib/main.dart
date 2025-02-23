@@ -61,7 +61,7 @@ Future<void> main() async {
     if (event != null) {
       if (event.containsKey("sensorData")) {
         final sensorData = SensorData.fromMap(event["sensorData"]);
-        log(sensorData.toString());
+        // log(sensorData.toString());
         sensorCubit.updateSensorData(sensorData);
       }
       if (event.containsKey("orientation")) {

@@ -17,6 +17,7 @@ import 'package:holdwise/features/records/presentation/pages/personal_records.da
 import 'package:holdwise/features/records/presentation/pages/records.dart';
 import 'package:holdwise/features/profile/presentation/pages/profile_screen.dart';
 import 'package:holdwise/features/appointments/presentation/pages/specialist_appointments_page.dart';
+import 'package:holdwise/features/records/presentation/pages/specialist_records.dart';
 import 'package:holdwise/features/sensors/presentation/pages/sensors_screen.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:holdwise/app/config/colors.dart';
@@ -114,12 +115,12 @@ class RoleBasedNavBar extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-              screen: PersonalRecords(),
+              screen: RecordsScreen(),
               // screen: RecordsScreen(),
               item: _buildNavItem(
-                icon: Icons.analytics,
+                icon: Icons.people,
                 // patients records but it should be shorter
-                title: "Records",
+                title: "Patients",
               )),
           PersistentTabConfig(
             screen: FullScreenCamera(),

@@ -1,66 +1,94 @@
-import 'package:flutter/material.dart';
-import 'package:holdwise/features/records/presentation/widgets/patient_list.dart';
-import 'package:holdwise/features/records/presentation/widgets/posture_heatmap.dart';
-import 'package:holdwise/features/records/presentation/widgets/health_risk_graph.dart';
-import 'package:holdwise/features/records/presentation/widgets/specialist_notes.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
+import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
+import 'package:holdwise/features/records/data/cubits/patient_cubit/patient_cubit.dart';
+import 'package:holdwise/features/records/data/models/patient.dart';
+import 'package:holdwise/features/records/presentation/pages/patient_statistics_screen.dart';
 class SpecialistRecords extends StatefulWidget {
-  const SpecialistRecords({super.key});
+  const SpecialistRecords({Key? key}) : super(key: key);
 
   @override
   _SpecialistRecordsState createState() => _SpecialistRecordsState();
 }
 
 class _SpecialistRecordsState extends State<SpecialistRecords> {
-  String? selectedSpecialist;
-  final List<String> specialists = [
-    'Dr. Smith',
-    'Dr. Johnson',
-    'Dr. Brown',
-    'Dr. Taylor',
-  ]; // Replace with actual specialist list from your data source
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Dropdown for filtering by specialist
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Filter by Specialist',
-              border: OutlineInputBorder(),
-            ),
-            value: selectedSpecialist,
-            items: specialists.map((specialist) {
-              return DropdownMenuItem(
-                value: specialist,
-                child: Text(specialist),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedSpecialist = value;
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: ListView(
-            children: [
-              const SizedBox(height: 16),
-              PatientList(specialistId: 'selectedSpecialist'),
-              const SizedBox(height: 16),
-              const PostureHeatmap(),
-              const SizedBox(height: 16),
-              const HealthRiskGraph(),
-              const SizedBox(height: 16),
-              const SpecialistNotes(),
-            ],
-          ),
-        ),
-      ],
+    // Retrieve the specialist ID from the AuthCubit state.
+    final authState = context.read<AuthCubit>().state;
+    final specialistId = (authState as AuthAuthenticated).user.uid;
+    // Use ThemeCubit for dark/light mode if needed.
+    final isDarkMode = context.read<ThemeCubit>().state == ThemeMode.dark;
+
+    return BlocProvider(
+      create: (_) => PatientCubit()..fetchPatients(specialistId),
+      child: BlocBuilder<PatientCubit, PatientState>(
+        builder: (context, state) {
+          if (state is PatientLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PatientLoaded) {
+            final patients = state.patients;
+            if (patients.isEmpty) {
+              return const Center(child: Text('No patients found.'));
+            }
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<PatientCubit>().fetchPatients(specialistId);
+              },
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                itemCount: patients.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final patient = patients[index];
+                  return Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage(patient.imageUrl),
+                      ),
+                      title: Text(
+                        patient.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PatientStatisticsScreen(
+                              patientId: patient.id,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            );
+          } else if (state is PatientError) {
+            return Center(
+              child: Text(
+                'Could not load patients.',
+                style: TextStyle(color: AppColors.error),
+              ),
+            );
+          }
+          return const Center(child: Text('No patients found.'));
+        },
+      ),
     );
   }
 }

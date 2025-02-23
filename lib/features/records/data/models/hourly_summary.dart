@@ -6,6 +6,8 @@ class HourlySummary {
   final double maxX;
   final double minX;
   final int postureViolations;
+  final int? postureScore;
+
 
   HourlySummary({
     required this.dateTime,
@@ -15,6 +17,7 @@ class HourlySummary {
     required this.maxX,
     required this.minX,
     required this.postureViolations,
+    this.postureScore,
   });
 
   factory HourlySummary.fromJson(Map<String, dynamic> json) {

@@ -28,4 +28,24 @@ class HourlySummariesCubit extends Cubit<List<HourlySummary>> {
       emit([]);
     }
   }
+
+  Future<void> fetchSummariesForPatient(String patientId) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('patients')
+          .doc(patientId)
+          .collection('hourly_summaries')
+          // .orderBy('timestamp', descending: true)
+          .get();
+
+      final summaries = querySnapshot.docs.map((doc) {
+        return HourlySummary.fromJson(doc.data());
+      }).toList();
+
+      emit(summaries);
+    } catch (e) {
+      emit([]);
+      print("❌ Error fetching summaries for patient: $e");
+    }
+  }
 }

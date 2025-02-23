@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdwise/app/config/colors.dart';
+import 'package:holdwise/app/cubits/auth_cubit/auth_cubit.dart';
 import 'package:holdwise/app/cubits/theme_cubit/theme_cubit.dart';
 import 'package:holdwise/common/widgets/custom_input_field.dart';
 import 'package:holdwise/features/explore_screen/data/upload_cubit/advice_upload_cubit.dart';
@@ -174,10 +175,16 @@ class _AddSpecialistAdviceScreenState extends State<AddSpecialistAdviceScreen> {
   /// Triggers the form submission using the AdviceUploadCubit.
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
+    final user = context.read<AuthCubit>().state is AuthAuthenticated
+        ? (context.read<AuthCubit>().state as AuthAuthenticated).user
+        : null;
 
     context.read<AdviceUploadCubit>().uploadAdvice(
           title: _titleController.text.trim(),
           content: _contentController.text.trim(),
+          author: user?.displayName ?? 'Unknown',
+          authorId: user?.uid ?? 'Unknown',
+          category: 'General',
           mediaType: _selectedMediaType,
           mediaFile: _mediaFile,
         );

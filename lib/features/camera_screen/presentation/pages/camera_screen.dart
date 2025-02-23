@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:holdwise/app/config/colors.dart';
-
+import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
 class FullScreenCamera extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _FullScreenCameraState extends State<FullScreenCamera>
     with WidgetsBindingObserver {
   late CameraController _controller;
   late List<CameraDescription> _cameras;
+  final PoseDetectionHelper _poseDetector = PoseDetectionHelper();
   Interpreter? _interpreter;
   List<String> _labels = [];
   bool isCameraInitialized = false;
@@ -41,16 +43,16 @@ class _FullScreenCameraState extends State<FullScreenCamera>
   Future<void> _loadModel() async {
     try {
       _interpreter = await Interpreter.fromAsset(
-          'assets/pose_classification_model.tflite');
+          'assets/models/pose_classification_model.tflite');
       _labels = await _loadLabels('assets/labels.txt');
-      print("✅ Model and labels loaded successfully");
+      log("✅ Model and labels loaded successfully");
 
       // Start checking the pose continuously every 2 seconds
-      _poseTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+      _poseTimer = Timer.periodic(Duration(seconds: 10), (timer) {
         _processPose();
       });
     } catch (e) {
-      print("❌ Error loading model: $e");
+      log("❌ Error loading model: $e");
     }
   }
 
@@ -70,6 +72,7 @@ class _FullScreenCameraState extends State<FullScreenCamera>
       print("🔑 Keypoints: $keypoints");
       if (keypoints.isNotEmpty) {
         String? result = await classifyPose(keypoints);
+        log('result: $result');
         if (result != null) {
           _updateBorderColor(result);
         }
@@ -80,18 +83,75 @@ class _FullScreenCameraState extends State<FullScreenCamera>
   }
 
   /// **Extract Keypoints from Camera Frame**
+  // Future<List<double>> _extractKeypoints() async {
+  //   if (!isCameraInitialized) return List.filled(33 * 3, 0.0);
+
+  //   try {
+  //     final XFile? file = await _controller.takePicture();
+  //     if (file == null) return List.filled(33 * 3, 0.0);
+
+  //     final InputImage inputImage = InputImage.fromFilePath(file.path);
+  //     final poses = await _poseDetector.detectPoses(inputImage);
+
+  //     if (poses.isNotEmpty) {
+  //       final pose = poses.first;
+  //       List<double> keypoints = [];
+
+  //       for (PoseLandmarkType type in PoseLandmarkType.values) {
+  //         final landmark = pose.landmarks[type];
+  //         if (landmark != null) {
+  //           keypoints.addAll([landmark.x, landmark.y, landmark.z]);
+  //         } else {
+  //           keypoints.addAll([0.0, 0.0, 0.0]); // Placeholder if missing
+  //         }
+  //       }
+
+  //       return keypoints;
+  //     }
+  //   } catch (e) {
+  //     print("❌ Error extracting keypoints: $e");
+  //   }
+
+  //   return List.filled(33 * 3, 0.0);
+  // }
+
   Future<List<double>> _extractKeypoints() async {
+    if (!isCameraInitialized) return List.filled(33 * 3, 0.0);
+
     try {
-      // Invoke the native method.
-      // final List<dynamic> keypoints = await _channel.invokeMethod('getPoseKeypoints');
-      // Convert the dynamic list to List<double>.
-      // return keypoints.map((e) => e as double).toList();
-      return List.filled(33 * 3, 0.0); // Placeholder
+      final XFile? file = await _controller.takePicture();
+      if (file == null) return List.filled(33 * 3, 0.0);
+
+      final InputImage inputImage = InputImage.fromFilePath(file.path);
+      final poses = await _poseDetector.detectPoses(inputImage);
+
+      if (poses.isNotEmpty) {
+        final pose = poses.first;
+        List<double> keypoints = [];
+
+        for (PoseLandmarkType type in PoseLandmarkType.values) {
+          final landmark = pose.landmarks[type];
+          if (landmark != null) {
+            keypoints.addAll([landmark.x, landmark.y, landmark.z]);
+          } else {
+            keypoints.addAll([0.0, 0.0, 0.0]); // Placeholder if missing
+          }
+        }
+
+        // Normalize keypoints (same as in Python)
+        double normFactor =
+            math.sqrt(keypoints.fold(0.0, (sum, val) => sum + val * val));
+
+        log('Norm Factor: ${normFactor.toString()}');
+        keypoints = keypoints.map((val) => val / (normFactor)).toList();
+        
+        return keypoints;
+      }
     } catch (e) {
       print("❌ Error extracting keypoints: $e");
-      // Return a fallback (or you could propagate the error).
-      return List.filled(33 * 3, 0.0);
     }
+
+    return List.filled(33 * 3, 0.0);
   }
 
   /// **Run TFLite Model on Extracted Keypoints**
@@ -107,8 +167,8 @@ class _FullScreenCameraState extends State<FullScreenCamera>
 
     _interpreter!.run(input, output);
 
-    int predictedIndex = output[0].indexOf(
-        output[0].reduce((a, b) => math.max<double>(a.toDouble(), b.toDouble())));
+    int predictedIndex = output[0].indexOf(output[0]
+        .reduce((a, b) => math.max<double>(a.toDouble(), b.toDouble())));
 
     return _labels[predictedIndex]; // Return class label
   }
@@ -225,7 +285,7 @@ class _FullScreenCameraState extends State<FullScreenCamera>
 
           // Pose Classification Status
           Positioned(
-            bottom: screenHeight * 0.1,
+            bottom: screenHeight * 0.2,
             left: screenWidth * 0.2,
             right: screenWidth * 0.2,
             child: Container(
@@ -245,5 +305,19 @@ class _FullScreenCameraState extends State<FullScreenCamera>
         ],
       ),
     );
+  }
+}
+
+class PoseDetectionHelper {
+  final PoseDetector _poseDetector =
+      PoseDetector(options: PoseDetectorOptions());
+
+  Future<List<Pose>> detectPoses(InputImage inputImage) async {
+    final List<Pose> poses = await _poseDetector.processImage(inputImage);
+    return poses;
+  }
+
+  void dispose() {
+    _poseDetector.close();
   }
 }

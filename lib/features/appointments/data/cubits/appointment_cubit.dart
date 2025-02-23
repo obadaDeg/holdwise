@@ -53,6 +53,16 @@ class AppointmentCubit extends Cubit<AppointmentState> {
     }
   }
 
+  Future<String?> getSpecialistName(String specialistId) async {
+    try {
+      final specialistName = await _repository.getSpecialistName(specialistId);
+      return specialistName;
+    } catch (e) {
+      log('Error getting specialist name: $e', error: e);
+      return null;
+    }
+  }
+
   /// Update appointment status (e.g., accept or decline a request).
   Future<void> updateAppointmentStatus(Appointment appointment) async {
     emit(state.copyWith(isLoading: true, error: null));

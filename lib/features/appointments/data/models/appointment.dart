@@ -14,6 +14,7 @@ class Appointment {
   final String id;
   final String patientId;
   final String specialistId;
+  final String specialistName; // <-- New field for display name
   final String patientName; // <-- New field for display name
   final DateTime appointmentTime;
   final AppointmentStatus status;
@@ -24,6 +25,7 @@ class Appointment {
     required this.id,
     required this.patientId,
     required this.specialistId,
+    required this.specialistName,
     required this.patientName,
     required this.appointmentTime,
     required this.status,
@@ -45,6 +47,7 @@ class Appointment {
       id: id ?? this.id,
       patientId: patientId ?? this.patientId,
       specialistId: specialistId ?? this.specialistId,
+      specialistName: specialistName ?? this.specialistName,
       patientName: patientName ?? this.patientName,
       appointmentTime: appointmentTime ?? this.appointmentTime,
       status: status ?? this.status,
@@ -60,6 +63,7 @@ class Appointment {
       id: doc.id,
       patientId: data['patientId'] as String,
       specialistId: data['specialistId'] as String,
+      specialistName: data['specialistName'] as String,
       patientName: data['patientName'] as String,
       appointmentTime: (data['appointmentTime'] as Timestamp).toDate(),
       status: _statusFromString(data['status'] as String),

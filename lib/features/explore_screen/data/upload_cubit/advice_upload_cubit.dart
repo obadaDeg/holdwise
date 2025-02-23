@@ -18,6 +18,9 @@ class AdviceUploadCubit extends Cubit<AdviceUploadState> {
     required String title,
     required String content,
     required String mediaType,
+    required String author,
+    required String authorId,
+    required String category,
     File? mediaFile,
   }) async {
     emit(AdviceUploadState.loading());
@@ -42,15 +45,19 @@ class AdviceUploadCubit extends Cubit<AdviceUploadState> {
           throw Exception('Failed to upload media to the local server');
         }
       }
-      
+      ;
       // Save advice details to Firestore with the encrypted media token.
       await firestore.collection('advices').add({
         'title': title,
         'content': content,
-        'mediaType': mediaType,
-        'mediaUrl': mediaUrl, // This token will be used to build the final URL.
+        'type': mediaType, 
+        'mediaUrl': mediaUrl,
+        'author': author,
+        'authorId': authorId,
+        'category': category,
         'timestamp': FieldValue.serverTimestamp(),
       });
+
       emit(AdviceUploadState.success());
     } catch (e) {
       emit(AdviceUploadState.error(e.toString()));
