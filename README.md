@@ -140,6 +140,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Obada Daghlas - Project Lead & Developer
 
-## 📧 Contact
-
-For questions or support, please email: contact@holdwise.app
